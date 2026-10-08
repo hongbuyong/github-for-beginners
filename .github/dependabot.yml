@@ -1,0 +1,16 @@
+# 워크플로에 쓰는 GitHub Actions의 새 버전을 확인해서 업데이트 PR을 보내요.
+# 액션은 커밋 해시로 고정되어 있고, Dependabot이 해시와 옆의 버전 주석을 함께 바꿔 줘요.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps"
