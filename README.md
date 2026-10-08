@@ -3,7 +3,13 @@
 커밋, 푸시, PR, 머지, 배포, 그리고 충돌 해결까지.
 "나"와 "팀원"이 `login.html` 한 파일을 주고받는 장면을 따라가며 깃허브가 어떻게 돌아가는지 보여 주는 한국어 입문 자료예요.
 
-**바로 보기:** https://hongbuyong.github.io/github-for-beginners/
+## 링크
+
+| 구분 | 주소 | 설명 |
+|---|---|---|
+| 웹에서 바로 보기 | https://hongbuyong.github.io/github-for-beginners/ | GitHub Pages로 공개한 페이지예요. 설치 없이 열려요 |
+| 저장소 | https://github.com/hongbuyong/github-for-beginners | 코드, 수정 기록, Issue, Pull Request |
+| Claude 아티팩트 | https://claude.ai/artifact/VEvkQRczyTqYMhbQUSmnJo | Claude에서 만든 원본 페이지예요. 내용은 같아요 |
 
 ## 무엇을 보여 주나요
 
