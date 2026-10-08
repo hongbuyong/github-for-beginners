@@ -3,7 +3,13 @@
 커밋, 푸시, PR, 머지, 배포, 그리고 충돌 해결까지.
 "나"와 "팀원"이 `login.html` 한 파일을 주고받는 장면을 따라가며 깃허브가 어떻게 돌아가는지 보여 주는 한국어 입문 자료예요.
 
-**바로 보기:** https://hongbuyong.github.io/github-for-beginners/
+## 링크
+
+| 구분 | 주소 | 설명 |
+|---|---|---|
+| 웹에서 바로 보기 | https://hongbuyong.github.io/github-for-beginners/ | GitHub Pages로 공개한 페이지예요. 설치 없이 열려요 |
+| 저장소 | https://github.com/hongbuyong/github-for-beginners | 코드, 수정 기록, Issue, Pull Request |
+| Claude 아티팩트 | https://claude.ai/artifact/VEvkQRczyTqYMhbQUSmnJo | Claude에서 만든 원본 페이지예요. 내용은 같아요 |
 
 ## 무엇을 보여 주나요
 
@@ -47,6 +53,15 @@
 ## 함께 고치기
 
 오타, 더 쉬운 설명, 새로운 장면 아이디어 모두 환영해요. Issue나 Pull Request로 알려 주세요.
+
+### main 브랜치 보호 규칙
+
+`main` 브랜치에는 아래 규칙이 걸려 있어요. 예외는 없어서 관리자도 똑같이 적용돼요.
+
+- **강제 푸시 금지**: `git push --force`로 기존 기록을 덮어쓸 수 없어요. 고칠 게 있으면 새 커밋을 더해 주세요.
+- **브랜치 삭제 금지**: `main` 브랜치를 지울 수 없어요.
+
+평소처럼 커밋을 쌓아 올리는 푸시와 PR 머지는 그대로 할 수 있어요. 외부 기여자는 저장소를 fork한 뒤 Pull Request를 보내 주세요.
 
 `index.html` 안의 스크립트를 고치면 CSP 해시도 바꿔야 해요. 바꾸지 않으면 스크립트가 실행되지 않아요. 아래 명령으로 해시가 맞는지 확인할 수 있고, 맞지 않으면 새 해시를 알려 줘요.
 
