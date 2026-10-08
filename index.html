@@ -1,0 +1,1706 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NxuDh4HN7ASTecPNsyYeoed4C5PHq8j+qn2djaW366I='; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="커밋, 푸시, PR, 머지, 배포, 충돌 해결까지. 나와 팀원이 login.html 한 파일을 주고받는 장면으로 깃허브 작업 흐름을 설명하는 한국어 입문 자료.">
+<meta name="color-scheme" content="light dark">
+<title>깃허브 작업 흐름</title>
+<style>
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<style>
+  /* Layout: one reading column; two animated diagrams, each with a step player underneath */
+  :root {
+    --bg: #f5f7f9;
+    --surface: #ffffff;
+    --ink: #17202b;
+    --muted: #5b6878;
+    --line: #cfd7e0;
+    --main: #1f6f8b;      /* main branch, local side */
+    --feature: #c8641e;   /* feature branch, PR */
+    --cloud: #4b4fa8;     /* GitHub side */
+    --hot: #d0386a;       /* whatever is moving right now */
+    --tint-main: #e3f0f5;
+    --tint-cloud: #ebebf8;
+    --tint-feature: #fbeee4;
+    --tint-hot: #fbe6ee;
+    --skin: #f1c7a3;
+    --hair: #2b2f36;
+    --hair2: #7a4a2b;
+    --desk: #b98d62;
+    --laptop: #c3ccd6;
+    --face: #23262b;
+    --mate: #b26b12;
+    --tint-mate: #f8ecd9;
+    --code-bg: #f7f9fb;
+    --add-bg: #e2f4e8; --add-fg: #1d6b3c;
+    --del-bg: #fbe5e5; --del-fg: #a12d2d;
+    --sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "D2Coding", Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12171d; --surface: #1a2129; --ink: #e6ebf0; --muted: #9aa7b5; --line: #344150;
+      --main: #5bb3d1; --feature: #f0965a; --cloud: #9a9ef0; --hot: #ff7aa2;
+      --tint-main: #18303a; --tint-cloud: #23244a; --tint-feature: #3a2618; --tint-hot: #3d1c28;
+      --skin: #e0b08c; --hair: #3a3f48; --hair2: #9a6440; --desk: #7a5a3c; --laptop: #556170;
+      --mate: #e8a54a; --tint-mate: #3a2a14; --code-bg: #151b22; --add-bg: #173a25; --add-fg: #8fe0ad; --del-bg: #43191c; --del-fg: #ff9b9b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12171d; --surface: #1a2129; --ink: #e6ebf0; --muted: #9aa7b5; --line: #344150;
+    --main: #5bb3d1; --feature: #f0965a; --cloud: #9a9ef0; --hot: #ff7aa2;
+    --tint-main: #18303a; --tint-cloud: #23244a; --tint-feature: #3a2618; --tint-hot: #3d1c28;
+    --skin: #e0b08c; --hair: #3a3f48; --hair2: #9a6440; --desk: #7a5a3c; --laptop: #556170;
+      --mate: #e8a54a; --tint-mate: #3a2a14; --code-bg: #151b22; --add-bg: #173a25; --add-fg: #8fe0ad; --del-bg: #43191c; --del-fg: #ff9b9b;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.65; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; display: grid; gap: 48px; }
+  header { display: grid; gap: 8px; max-width: 64ch; }
+  .eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: .06em; color: var(--muted); }
+  h1 { margin: 0; font-size: clamp(28px, 5vw, 40px); line-height: 1.25; text-wrap: balance; }
+  h2 { margin: 0; font-size: 22px; text-wrap: balance; }
+  p { margin: 0; }
+  .lead { color: var(--muted); font-size: 17px; }
+  section { display: grid; gap: 16px; }
+  .wrap > *, section > * { min-width: 0; }
+  section > p { max-width: 64ch; color: var(--muted); }
+
+  .figure { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .canvas { overflow-x: auto; }
+  .canvas svg { display: block; width: 100%; min-width: 760px; height: auto; }
+
+  /* ---------- svg shared ---------- */
+  svg text { font-family: var(--sans); fill: var(--ink); }
+  svg .mono { font-family: var(--mono); font-size: 13px; }
+  svg .sub { fill: var(--muted); font-size: 13px; }
+  svg .title { font-size: 16px; font-weight: 700; }
+  svg .zone-label { font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+  svg .note { font-weight: 700; transition: fill .4s; }
+  svg .note.now { fill: var(--hot); }
+
+  /* diagram 1 */
+  .box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: fill .4s, stroke .4s, stroke-width .4s; }
+  .box.key-local { stroke: var(--main); stroke-width: 2; }
+  .box.key-cloud { stroke: var(--cloud); stroke-width: 2; }
+  .box.hot { fill: var(--tint-hot); stroke: var(--hot); stroke-width: 3; }
+  .flow { fill: none; stroke: var(--muted); stroke-width: 2; transition: stroke .4s, stroke-width .4s; }
+  .flow.cloudline { stroke: var(--cloud); }
+  .flow.dashed { stroke-dasharray: 7 5; }
+  .flow.hot { stroke: var(--hot); stroke-width: 3.5; }
+  .flow-label { transition: fill .4s; }
+  .flow-label.hot { fill: var(--hot); font-weight: 700; }
+  .motion-path { fill: none; stroke: none; }
+  .packet .sheet { fill: var(--surface); stroke: var(--hot); stroke-width: 2.5; }
+  .packet .ink { stroke: var(--hot); stroke-width: 2; stroke-linecap: round; }
+
+  /* diagram 2 */
+  .rail { fill: none; stroke-width: 4; stroke-linecap: round; }
+  .rail.main { stroke: var(--main); }
+  .rail.feature { stroke: var(--feature); }
+  .draw { stroke-dasharray: 1 1; stroke-dashoffset: 0; transition: stroke-dashoffset .9s cubic-bezier(.65,0,.35,1); }
+  .dot { fill: var(--surface); stroke-width: 3; transform-box: fill-box; transform-origin: center; transition: opacity .35s, transform .45s cubic-bezier(.34,1.56,.64,1); }
+  .dot.main { stroke: var(--main); }
+  .dot.feature { stroke: var(--feature); }
+  .dot.merge { fill: var(--main); stroke: var(--surface); }
+  .fade { transition: opacity .5s; }
+  .pr-box { fill: var(--tint-feature); stroke: var(--feature); stroke-dasharray: 5 4; }
+  .bubble { fill: var(--surface); stroke: var(--line); }
+  [data-s].off { opacity: 0; }
+  .dot.off { transform: scale(.3); }
+  .draw.off { opacity: 1; stroke-dashoffset: 1; }
+
+  /* scene: people */
+  .scene .canvas svg { min-width: 0; }
+  .zone-tag { font-size: 14px; font-weight: 700; fill: var(--muted); transition: fill .5s; }
+  .zone-tag.here { fill: var(--hot); }
+  .cloud-zone { fill: var(--tint-cloud); stroke: var(--cloud); stroke-width: 1.5; stroke-dasharray: 6 5; transition: stroke .5s, stroke-width .5s; }
+  .cloud-zone.here { stroke: var(--hot); stroke-width: 2.5; }
+  .shelf { stroke: var(--cloud); stroke-width: 3; stroke-linecap: round; }
+  .lane { transition: opacity .7s; }
+  .old-box { fill: var(--line); }
+  .old-text { font-family: var(--mono); font-size: 10.5px; fill: var(--muted) !important; }
+  .torso.me { fill: var(--main); }
+  .torso.tm { fill: var(--mate); }
+  .person { animation: breathe 3.6s ease-in-out infinite; }
+  .person.tm { animation-delay: -1.8s; }
+  @keyframes breathe { 50% { transform: translateY(-1.5px); } }
+  .arm { fill: none; stroke-width: 10; stroke-linecap: round; transition: transform .7s cubic-bezier(.34,1.35,.64,1); }
+  .arm.me { stroke: var(--main); transform-origin: 196px 298px; transform: rotate(0deg); }
+  .arm.tm { stroke: var(--mate); transform-origin: 764px 298px; transform: rotate(0deg); }
+  .arm.me.up { transform: rotate(-80deg); }
+  .arm.tm.up { transform: rotate(80deg); }
+  .hand, .skin { fill: var(--skin); }
+  .eye { fill: var(--face); transform-box: fill-box; transform-origin: center; animation: blink 5.2s infinite; }
+  .person.tm .eye { animation-delay: -2.4s; }
+  @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.12); } }
+  .mouth { fill: none; stroke: var(--face); stroke-width: 2; stroke-linecap: round; }
+  .laptop { fill: var(--laptop); stroke: transparent; stroke-width: 3; transition: stroke .3s; }
+  .laptop.busy { stroke: var(--hot); animation: glow 1.1s ease-in-out infinite alternate; }
+  @keyframes glow { from { stroke-opacity: .2; } to { stroke-opacity: 1; } }
+  .head { transform-box: fill-box; transform-origin: 50% 100%; }
+  .head.nod { animation: nod .6s ease-in-out 3; }
+  @keyframes nod { 0%, 100% { transform: rotate(0); } 50% { transform: translateY(5px) rotate(-4deg); } }
+  .desk { fill: var(--desk); }
+  .vis { transition: opacity .4s; }
+  .popper { transform-box: fill-box; transform-origin: 50% 100%; }
+  .popper.pop { animation: pop .5s cubic-bezier(.34,1.56,.64,1); }
+  .popper.land { animation: land .45s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes land { 0% { transform: scale(1.14, .8); } 100% { transform: scale(1); } }
+  .cbox-wrap { filter: drop-shadow(0 3px 4px rgba(15, 25, 40, .28)); }
+  .cbox.me { fill: var(--main); }
+  .cbox.tm { fill: var(--mate); }
+  .cbox-text { font-family: var(--mono); font-size: 10px; font-weight: 500; fill: var(--surface) !important; }
+  .trail { fill: none; stroke: var(--main); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: .5; transition: opacity .9s; }
+  .trail.gone { opacity: 0; }
+  .trail.tm { stroke: var(--mate); }
+  .trail.pr { stroke: var(--cloud); }
+  .lane-shelf { stroke: var(--muted); stroke-dasharray: 2 6; }
+  .pr-card { fill: var(--surface); stroke: var(--cloud); stroke-width: 2; }
+  .pr-text { font-size: 12px; font-weight: 700; fill: var(--cloud) !important; }
+  .say { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+  .say-text { font-size: 14px; font-weight: 500; }
+
+  /* scene: what is on the screen right now */
+  .screen { border-top: 1px solid var(--line); padding: 16px 18px; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 760px) { .screen { grid-template-columns: minmax(0, 1fr); } }
+  .swap { transition: opacity .25s ease, transform .25s ease; }
+  .swap.out { opacity: 0; transform: translateY(6px); }
+  .win { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--code-bg); min-width: 0; }
+  .win-bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--surface); min-width: 0; }
+  .lights { display: inline-flex; gap: 5px; flex: none; }
+  .lights i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .who { flex: none; font-size: 12px; font-weight: 700; padding: 1px 9px; border-radius: 99px; color: var(--surface); background: var(--main); transition: background .3s; }
+  .who.gh { background: var(--cloud); }
+  .who.tm { background: var(--mate); }
+  .win-title { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .win-body { padding-block: 12px; font-family: var(--mono); font-size: 13px; line-height: 1.8; overflow-x: auto; min-height: 196px; }
+  .win-body .l { display: block; padding-inline: 14px; white-space: pre; animation: lineIn .4s cubic-bezier(.2,.7,.3,1) both; }
+  @keyframes lineIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+  .l .n { display: inline-block; width: 2.4em; color: var(--muted); user-select: none; }
+  .l.add { background: var(--add-bg); color: var(--add-fg); }
+  .l.del { background: var(--del-bg); color: var(--del-fg); }
+  .l.cmd::before { content: "$ "; color: var(--muted); }
+  .l.out { color: var(--muted); }
+  .l.gap { height: .6em; }
+  .gh { font-family: var(--sans); white-space: normal; display: grid; gap: 8px; }
+  .gh h4 { margin: 0; font-size: 16px; }
+  .gh .meta { color: var(--muted); font-size: 14px; }
+  .badge { justify-self: start; font-size: 12px; font-weight: 700; padding: 1px 10px; border-radius: 99px; color: var(--surface); background: var(--mate); }
+  .badge.merged { background: var(--cloud); }
+  .comment { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 8px 12px; font-size: 14px; line-height: 1.6; }
+  .comment b { display: block; font-size: 12px; color: var(--muted); }
+  .plus { color: var(--add-fg); font-family: var(--mono); }
+  .minus { color: var(--del-fg); font-family: var(--mono); }
+  .hist { display: grid; gap: 2px; font-size: 14px; }
+  .hist span { display: flex; gap: 10px; }
+  .hist code { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .hist .new { color: var(--hot); font-weight: 700; }
+  .hist .new code { color: var(--hot); }
+  .inside { display: grid; gap: 10px; align-content: start; min-width: 0; }
+  .kv { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 14px; font-size: 14.5px; line-height: 1.5; }
+  .kv dt { color: var(--muted); white-space: nowrap; }
+  .kv dd { margin: 0; min-width: 0; }
+  .kv code { font-family: var(--mono); font-size: 13px; color: var(--hot); }
+
+  /* legend above the scene */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .sw { display: inline-block; width: 18px; height: 13px; border-radius: 3px; flex: none; }
+  .sw.me { background: var(--main); }
+  .sw.tm { background: var(--mate); }
+  .sw.main { height: 3px; border-radius: 2px; background: var(--cloud); }
+  .sw.lane { height: 0; border-top: 3px dotted var(--muted); border-radius: 0; }
+
+  /* who holds which version */
+  .board-wrap { border-top: 1px solid var(--line); padding: 14px 18px 16px; display: grid; gap: 10px; }
+  .board { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .board th, .board td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .board tbody tr:last-child th, .board tbody tr:last-child td { border-bottom: 0; }
+  .board thead th { font-size: 12px; font-weight: 500; color: var(--muted); padding-block: 2px 6px; }
+  .board tbody th { font-weight: 700; white-space: nowrap; }
+  .board tbody th::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 8px; background: var(--c); }
+  .board th.me { --c: var(--main); }
+  .board th.gh { --c: var(--cloud); }
+  .board th.tm { --c: var(--mate); }
+  .board td { font-weight: 500; border-radius: 4px; white-space: nowrap; }
+  .board td.none { color: var(--muted); font-weight: 400; }
+  .board td.warn { color: var(--del-fg); font-weight: 700; }
+  .board td.changed { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 30% { background: var(--tint-hot); color: var(--hot); } 100% { background: transparent; } }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .same { color: var(--add-fg); font-weight: 700; font-size: 14px; }
+  .dots button.gap { margin-left: 8px; }
+  .caption .part { font-size: 12px; font-weight: 700; color: var(--surface); background: var(--muted); padding: 1px 8px; border-radius: 99px; }
+  /* conflict */
+  .clash-line { stroke: var(--del-fg); stroke-width: 2.5; stroke-dasharray: 5 4; }
+  .clash-dot { fill: var(--del-fg); }
+  .clash-mark { fill: var(--surface) !important; font-weight: 700; font-size: 15px; }
+  #clash { animation: throb 1s ease-in-out infinite alternate; }
+  @keyframes throb { from { opacity: .55; } to { opacity: 1; } }
+  #clash[style*="opacity: 0"] { animation: none; }
+  #pr.bad .pr-card { stroke: var(--del-fg); fill: var(--del-bg); }
+  #pr.bad .pr-text { fill: var(--del-fg) !important; }
+  .clash .cbox { stroke: var(--del-fg); stroke-width: 3; }
+  .clash .popper { animation: shake .45s ease-in-out 1.4s 3; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px) rotate(-3deg); } 75% { transform: translateX(4px) rotate(3deg); } }
+  .l.bad { color: var(--del-fg); }
+  .l.mark { color: var(--hot); font-weight: 500; }
+  .l.theirs { background: var(--tint-mate); color: var(--mate); }
+  .conflict-box { border: 1px solid var(--del-fg); background: var(--del-bg); color: var(--del-fg); border-radius: 8px; padding: 8px 12px; font-size: 14px; line-height: 1.6; }
+  .conflict-box b { display: block; }
+
+  /* dots fit any width */
+  .dots { flex: 1 1 220px; display: flex; gap: 3px; justify-content: flex-end; }
+  .dots button { flex: 1 1 0; max-width: 20px; min-width: 5px; }
+  .dots button.gap { margin-left: 7px; }
+  .swipe-hint { display: none; font-size: 13px; color: var(--muted); padding: 8px 14px 0; }
+
+  /* phones: the scene follows the action like a camera */
+  @media (max-width: 640px) {
+    .wrap { padding-inline: 16px; padding-block: 28px 48px; gap: 40px; }
+    .scene .canvas svg { aspect-ratio: 520 / 410; }
+    .say-text { font-size: 19px; }
+    .zone-tag { font-size: 17px; }
+    .cbox-text { font-size: 11px; }
+    .player, .board-wrap, .screen { padding-inline: 14px; }
+    .controls button { padding: 6px 10px; }
+    .dots { flex-basis: 100%; justify-content: stretch; }
+    .dots button { max-width: none; }
+    .caption .head { gap: 4px 8px; }
+    .board { font-size: 13px; }
+    .board th, .board td { padding: 6px 6px; }
+    .board tbody th::before { margin-right: 5px; }
+    .win-body { min-height: 0; font-size: 12.5px; }
+    .win-body .l { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .kv { font-size: 14px; }
+    .legend { font-size: 13px; gap: 6px 14px; }
+    .swipe-hint { display: block; }
+  }
+  /* local previews, production, deploy */
+  .pv-label { font-size: 12px; font-weight: 700; fill: var(--muted) !important; }
+  .pv-frame { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .pv-frame.flash { animation: pvflash 1.4s ease-out; }
+  @keyframes pvflash { 0%, 35% { stroke: var(--hot); stroke-width: 3.5; } 100% { stroke: var(--line); stroke-width: 1.5; } }
+  .pv-bar { fill: var(--bg); }
+  .pv-dot { fill: var(--line); }
+  .pv-url, .ph-url { font-family: var(--mono); font-size: 10px; fill: var(--muted) !important; }
+  .ph-url { font-size: 7px; }
+  .pv-input { fill: var(--surface); stroke: var(--line); }
+  .pv-hint { font-size: 10px; fill: var(--muted) !important; }
+  .ph-hint { font-size: 6px; fill: var(--muted) !important; }
+  .pv-btn { fill: var(--ink); }
+  .pv-btn-text { font-size: 12px; font-weight: 700; fill: var(--surface) !important; }
+  .ph-btn-text { font-size: 8.5px; font-weight: 700; fill: var(--surface) !important; }
+  .pv-broken { opacity: 0; transition: opacity .3s; }
+  .pv-broken.on { opacity: 1; }
+  .pv-broken-bg { fill: var(--del-bg); }
+  .pv-broken text { font-family: var(--mono); font-size: 10px; fill: var(--del-fg) !important; }
+  .small-label { font-size: 12px; font-weight: 700; fill: var(--muted) !important; }
+  .srv { fill: var(--ink); }
+  .srv-slot { fill: var(--surface); opacity: .16; }
+  .leds circle { fill: var(--add-fg); }
+  .leds.busy circle { animation: led .3s steps(2) infinite; }
+  @keyframes led { 50% { opacity: .15; } }
+  .srv-name { font-family: var(--mono); font-size: 11px; fill: var(--surface) !important; }
+  .phone { fill: var(--ink); }
+  .ph-screen { fill: var(--surface); }
+  .ph-screen.flash { animation: phflash 1.6s ease-out; }
+  @keyframes phflash { 0%, 35% { fill: var(--tint-hot); } 100% { fill: var(--surface); } }
+  .phone-home { stroke: var(--surface); stroke-width: 2; stroke-linecap: round; opacity: .5; }
+  .pkg { fill: var(--cloud); }
+  .pkg-text { font-size: 11px; font-weight: 700; fill: var(--surface) !important; }
+  .signal { fill: none; stroke: var(--add-fg); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: 0; }
+  .signal.on { opacity: 1; stroke-dashoffset: 0; transition: stroke-dashoffset .6s ease-out; }
+  .sw.pv { background: var(--surface); border: 1.5px solid var(--line); }
+  .sw.srv { background: var(--ink); }
+  .board th.pr { --c: var(--ink); }
+
+  /* phones: keep the scene on screen, show one panel at a time */
+  .mtabs { display: none; gap: 6px; padding: 12px 14px 0; border-top: 1px solid var(--line); }
+  .mtabs button { flex: 1; font: 700 14px var(--sans); padding: 9px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); cursor: pointer; }
+  .mtabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .mtabs button:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+  .figure.scene { overflow: hidden; overflow: clip; }
+  @media (max-width: 640px) {
+    .stage { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 10px 18px -14px rgba(10, 20, 30, .45); }
+    .stage .caption .d { font-size: 14px; line-height: 1.55; }
+    .stage .player { padding-block: 10px 12px; gap: 8px; }
+    .mtabs { display: flex; }
+    .mtabs + .board-wrap { border-top: 0; }
+    .scene[data-tab="board"] .screen { display: none; }
+    .scene[data-tab="screen"] .board-wrap { display: none; }
+    .scene[data-tab="screen"] .screen { border-top: 0; }
+  }
+
+  /* part progress instead of 20 tiny dots */
+  .controls .dots.parts { flex: 1 1 260px; gap: 6px; justify-content: stretch; }
+  .controls .dots .partbtn {
+    flex: 1 1 0; width: auto; height: auto; max-width: none; min-width: 0;
+    display: grid; gap: 5px; padding: 6px 2px; border: 0; border-radius: 6px; background: none;
+    font: 700 12px var(--sans); color: var(--muted); text-align: left; cursor: pointer;
+  }
+  .partbtn .pb-bar { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .partbtn .pb-bar i { display: block; height: 100%; width: 0; background: var(--hot); transition: width .4s ease; }
+  .partbtn[aria-current="step"] { color: var(--ink); }
+
+  /* sound toggle */
+  .controls .snd { color: var(--muted); }
+  .controls .snd svg { width: 15px; height: 15px; }
+  .snd .wave { display: none; }
+  .snd[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+  .snd[aria-pressed="true"] .wave { display: inline; }
+  .snd[aria-pressed="true"] .mute { display: none; }
+
+  .swipe-tip, .mdesc { display: none; }
+  .mdesc { border-top: 0; padding: 12px 18px 18px; }
+  .mdesc p { font-size: 15.5px; line-height: 1.7; }
+
+  @media (max-width: 640px) {
+    /* pinned area shows only what is happening; the explanation moves to a tab */
+    .stage .caption .d { display: none; }
+    .stage .caption { min-height: 0; }
+    .swipe-tip { display: block; font-size: 12px; color: var(--muted); margin: -2px 0 0; }
+    .scene[data-tab="desc"] .mdesc { display: block; }
+    .scene[data-tab="desc"] .board-wrap, .scene[data-tab="desc"] .screen { display: none; }
+    .scene[data-tab="board"] .mdesc, .scene[data-tab="screen"] .mdesc { display: none; }
+    .mtabs button { font-size: 13px; padding: 9px 4px; }
+    .controls .snd span { display: none; }
+    .controls { gap: 6px; }
+    .stage .controls .play { min-width: 0; flex: 1; }
+    .controls button { padding: 6px 9px; }
+    .stage .caption .head { font-size: 15px; }
+    .controls .dots.parts { flex-basis: 100%; order: 5; }
+    .scene .canvas { touch-action: pan-y; }
+    /* larger type inside the drawing so it survives the scale-down */
+    .scene .cbox-text { font-size: 11.5px; }
+    .scene .old-text { font-size: 11.5px; }
+    .scene .pv-label, .scene .small-label { font-size: 15px; }
+    .scene .pv-url { font-size: 12px; }
+    .scene .pv-hint { font-size: 13px; }
+    .scene .pv-btn-text { font-size: 16px; }
+    .scene .pv-broken text { font-size: 12.5px; }
+    .scene .ph-url { font-size: 9px; }
+    .scene .ph-hint { font-size: 8.5px; }
+    .scene .ph-btn-text { font-size: 10px; }
+    .scene .srv-name { font-size: 13px; }
+    .scene .pr-text { font-size: 13px; }
+    .scene .pkg-text { font-size: 13px; }
+  }
+
+  /* ---------- player ---------- */
+  .player { border-top: 1px solid var(--line); padding: 14px 18px 16px; display: grid; gap: 12px; }
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .controls button {
+    font: 500 14px var(--sans); color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px;
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  }
+  .controls button:hover { border-color: var(--muted); }
+  .controls button:focus-visible, .dots button:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+  .controls .play { background: var(--ink); color: var(--bg); border-color: var(--ink); min-width: 104px; justify-content: center; }
+  .controls svg { width: 12px; height: 12px; fill: currentColor; }
+  .dots { display: flex; gap: 6px; margin-left: auto; }
+  .dots button { width: 20px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: var(--line); cursor: pointer; transition: background .3s; }
+  .dots button[aria-current="step"] { background: var(--hot); }
+  .caption { display: grid; gap: 4px; min-height: 3.4em; }
+  .caption .head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-weight: 700; }
+  .caption .count { font-family: var(--mono); font-size: 13px; color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .caption code { font-family: var(--mono); font-size: 13px; color: var(--hot); background: var(--tint-hot); padding: 1px 7px; border-radius: 5px; }
+  .caption code:empty { display: none; }
+  .caption p { color: var(--muted); }
+
+  /* ---------- cards ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .steps li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 6px; min-width: 0; }
+  .steps .name { font-weight: 700; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .steps code { font-family: var(--mono); font-size: 13px; color: var(--main); background: var(--tint-main); padding: 1px 7px; border-radius: 5px; }
+  .steps .remote code { color: var(--cloud); background: var(--tint-cloud); }
+  .steps .team code { color: var(--feature); background: var(--tint-feature); }
+  .steps p { color: var(--muted); font-size: 15px; }
+
+  .compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .compare div { border-top: 3px solid var(--line); padding-top: 12px; display: grid; gap: 4px; min-width: 0; }
+  .compare strong { font-size: 17px; }
+  .compare p { color: var(--muted); font-size: 15px; }
+
+  @media (max-width: 520px) { .dots { margin-left: 0; width: 100%; } }
+  .player > *, .board-wrap > *, .screen > * { min-width: 0; }
+  .controls .dots button { padding: 0; border: 0; min-width: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">GIT · GITHUB 기초</span>
+    <h1>내 코드는 어디로 가고, 어떻게 합쳐질까</h1>
+    <p class="lead">나와 팀원, 그리고 그 사이에 있는 GitHub. 세 곳만 기억하면 됩니다. 아래 장면이 저절로 재생되고, 버튼으로 멈추거나 한 단계씩 넘겨 볼 수 있어요. 휴대폰에서는 장면이 지금 일이 일어나는 쪽을 따라가요.</p>
+  </header>
+
+  <!-- ================= scene ================= -->
+  <section>
+    <h2>한눈에 보기: 나 ⇄ GitHub ⇄ 팀원</h2>
+    <p>예시 상황: 쇼핑몰 웹사이트의 <b>login.html</b>을 두 사람이 번갈아 고쳐요. 각자 노트북 화면, GitHub, 고객이 보는 운영 서버가 언제 바뀌는지, 같은 줄을 동시에 고쳐 충돌이 나는 상황까지 따라가 보세요.</p>
+    <div class="legend" aria-label="그림 읽는 법">
+      <span><i class="sw me"></i>내 상자 = 내 커밋</span>
+      <span><i class="sw tm"></i>팀원 상자 = 팀원 커밋</span>
+      <span><i class="sw main"></i>main 선반 = 모두가 쓰는 원본</span>
+      <span><i class="sw lane"></i>브랜치 선반 = 합치기 전 대기 자리</span>
+      <span><i class="sw pv"></i>작은 창 = 각자 노트북에서 띄운 화면</span>
+      <span><i class="sw srv"></i>운영 서버 = 고객이 실제로 쓰는 곳</span>
+    </div>
+    <div class="figure scene" id="fig0" data-tab="desc">
+      <div class="stage">
+      <div class="canvas">
+        <svg id="scene-svg" viewBox="0 0 960 430" preserveAspectRatio="xMidYMid meet" role="img" aria-label="나와 팀원이 커밋을 GitHub로 주고받고, 같은 줄을 동시에 고쳐 생긴 충돌을 상의해서 해결하는 장면">
+          <rect id="z-cloud" class="cloud-zone" x="300" y="34" width="360" height="190" rx="30"/>
+          <text class="zone-tag" x="480" y="64" text-anchor="middle" style="fill: var(--cloud)">GitHub · team/shop</text>
+          <text class="mono" x="320" y="106" style="fill: var(--cloud); font-size: 12px">main</text>
+          <text class="mono" x="356" y="106" style="fill: var(--muted); font-size: 12px">⋯</text>
+          <line class="shelf" x1="320" y1="116" x2="648" y2="116"/>
+          <rect class="old-box" x="375" y="87" width="50" height="28" rx="5"/>
+          <text class="old-text" x="400" y="105" text-anchor="middle">9f8e7d6</text>
+          <g id="lane-branch" class="lane">
+            <text class="mono" x="320" y="181" style="fill: var(--muted); font-size: 12px">브랜치</text>
+            <line class="shelf lane-shelf" x1="320" y1="191" x2="640" y2="191"/>
+          </g>
+
+          <line x1="20" y1="388" x2="940" y2="388" style="stroke: var(--line); stroke-width: 2"/>
+
+          <g id="pv-me" transform="translate(40 46)">
+            <text class="pv-label" x="0" y="-8">내 노트북 화면</text>
+            <rect id="pv-me-frame" class="pv-frame" width="200" height="104" rx="8"/>
+            <path class="pv-bar" d="M8,1 H192 A7,7 0 0 1 199,8 V21 H1 V8 A7,7 0 0 1 8,1 Z"/>
+            <circle class="pv-dot" cx="11" cy="11" r="2.5"/><circle class="pv-dot" cx="19" cy="11" r="2.5"/><circle class="pv-dot" cx="27" cy="11" r="2.5"/>
+            <text class="pv-url" x="38" y="15">localhost:3000</text>
+            <rect class="pv-input" x="14" y="32" width="172" height="24" rx="4"/>
+            <text id="pv-me-hint" class="pv-hint" x="22" y="48"></text>
+            <rect class="pv-btn" x="14" y="64" width="172" height="28" rx="5"/>
+            <text id="pv-me-btn" class="pv-btn-text" x="100" y="83" text-anchor="middle"></text>
+            <g id="pv-me-broken" class="pv-broken">
+              <rect class="pv-broken-bg" x="1" y="22" width="198" height="81" rx="0"/>
+              <text x="10" y="37">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</text>
+              <text x="10" y="51">시작하기</text>
+              <text x="10" y="65">=======</text>
+              <text x="10" y="79">들어가기</text>
+              <text x="10" y="93">&gt;&gt;&gt;&gt;&gt;&gt;&gt; main</text>
+            </g>
+          </g>
+          <g id="pv-tm" transform="translate(720 46)">
+            <text class="pv-label" x="0" y="-8">팀원 노트북 화면</text>
+            <rect id="pv-tm-frame" class="pv-frame" width="200" height="104" rx="8"/>
+            <path class="pv-bar" d="M8,1 H192 A7,7 0 0 1 199,8 V21 H1 V8 A7,7 0 0 1 8,1 Z"/>
+            <circle class="pv-dot" cx="11" cy="11" r="2.5"/><circle class="pv-dot" cx="19" cy="11" r="2.5"/><circle class="pv-dot" cx="27" cy="11" r="2.5"/>
+            <text class="pv-url" x="38" y="15">localhost:3000</text>
+            <rect class="pv-input" x="14" y="32" width="172" height="24" rx="4"/>
+            <text id="pv-tm-hint" class="pv-hint" x="22" y="48"></text>
+            <rect class="pv-btn" x="14" y="64" width="172" height="28" rx="5"/>
+            <text id="pv-tm-btn" class="pv-btn-text" x="100" y="83" text-anchor="middle"></text>
+            <g id="pv-tm-broken" class="pv-broken">
+              <rect class="pv-broken-bg" x="1" y="22" width="198" height="81" rx="0"/>
+              <text x="10" y="37">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</text>
+              <text x="10" y="51">시작하기</text>
+              <text x="10" y="65">=======</text>
+              <text x="10" y="79">들어가기</text>
+              <text x="10" y="93">&gt;&gt;&gt;&gt;&gt;&gt;&gt; main</text>
+            </g>
+          </g>
+          <!-- production: the server customers use, and a customer's phone -->
+          <g id="prod-zone">
+            <text class="small-label" x="390" y="258" text-anchor="middle">운영 서버</text>
+            <rect class="srv" x="352" y="268" width="76" height="120" rx="6"/>
+            <rect class="srv-slot" x="360" y="280" width="60" height="20" rx="3"/>
+            <rect class="srv-slot" x="360" y="306" width="60" height="20" rx="3"/>
+            <rect class="srv-slot" x="360" y="332" width="60" height="20" rx="3"/>
+            <g id="leds" class="leds"><circle cx="410" cy="290" r="3"/><circle cx="410" cy="316" r="3"/><circle cx="410" cy="342" r="3"/></g>
+            <text class="srv-name" x="390" y="374" text-anchor="middle">shop.com</text>
+            <text class="small-label" x="565" y="246" text-anchor="middle">고객 휴대폰</text>
+            <g transform="translate(532 254)">
+              <rect class="phone" width="66" height="124" rx="12"/>
+              <rect id="ph-screen" class="ph-screen" x="5" y="14" width="56" height="96" rx="4"/>
+              <text class="ph-url" x="33" y="27" text-anchor="middle">shop.com</text>
+              <rect class="pv-input" x="9" y="36" width="48" height="16" rx="3"/>
+              <text id="ph-hint" class="ph-hint" x="12" y="47"></text>
+              <rect class="pv-btn" x="9" y="60" width="48" height="20" rx="4"/>
+              <text id="ph-btn" class="ph-btn-text" x="33" y="74" text-anchor="middle"></text>
+              <line class="phone-home" x1="24" y1="117" x2="42" y2="117"/>
+            </g>
+            <text id="t-prod" class="zone-tag" x="478" y="414" text-anchor="middle">운영 환경 · 고객이 보는 곳</text>
+          </g>
+          <path id="signal" class="signal" pathLength="1" d="M430,300 C470,268 500,268 530,296"/>
+
+          <!-- me -->
+          <g class="person me">
+            <g id="head-me" class="head">
+              <circle class="skin" cx="160" cy="250" r="24"/>
+              <path d="M136,248 A24,24 0 0 1 184,248 Q172,236 150,240 Q140,242 136,248 Z" style="fill: var(--hair)"/>
+              <ellipse class="eye" cx="152" cy="254" rx="2.6" ry="2.8"/>
+              <ellipse class="eye" cx="168" cy="254" rx="2.6" ry="2.8"/>
+              <path class="mouth" d="M152,263 Q160,269 168,263"/>
+            </g>
+            <path class="torso me" d="M122,338 V302 Q122,280 160,280 Q198,280 198,302 V338 Z"/>
+            <g class="arm me" id="arm-me">
+              <line x1="196" y1="298" x2="232" y2="322"/>
+              <circle class="hand" cx="232" cy="322" r="6"/>
+            </g>
+            <rect id="lap-me" class="laptop" x="126" y="294" width="68" height="42" rx="5"/>
+            <circle cx="160" cy="314" r="5" style="fill: var(--surface); opacity: .7"/>
+          </g>
+          <rect class="desk" x="50" y="334" width="260" height="12" rx="3"/>
+          <rect class="desk" x="66" y="346" width="8" height="42"/>
+          <rect class="desk" x="286" y="346" width="8" height="42"/>
+          <text id="t-me" class="zone-tag" x="180" y="414" text-anchor="middle">나 · 내 노트북</text>
+
+          <!-- teammate -->
+          <g class="person tm">
+            <g id="head-tm" class="head">
+              <circle class="skin" cx="800" cy="250" r="24"/>
+              <path d="M776,250 A24,24 0 0 1 824,250 L826,272 Q820,262 818,248 Q800,238 782,248 Q780,262 774,272 Z" style="fill: var(--hair2)"/>
+              <ellipse class="eye" cx="792" cy="254" rx="2.6" ry="2.8"/>
+              <ellipse class="eye" cx="808" cy="254" rx="2.6" ry="2.8"/>
+              <path class="mouth" d="M792,263 Q800,269 808,263"/>
+            </g>
+            <path class="torso tm" d="M762,338 V302 Q762,280 800,280 Q838,280 838,302 V338 Z"/>
+            <g class="arm tm" id="arm-tm">
+              <line x1="764" y1="298" x2="728" y2="322"/>
+              <circle class="hand" cx="728" cy="322" r="6"/>
+            </g>
+            <rect id="lap-tm" class="laptop" x="766" y="294" width="68" height="42" rx="5"/>
+            <circle cx="800" cy="314" r="5" style="fill: var(--surface); opacity: .7"/>
+          </g>
+          <rect class="desk" x="650" y="334" width="260" height="12" rx="3"/>
+          <rect class="desk" x="666" y="346" width="8" height="42"/>
+          <rect class="desk" x="886" y="346" width="8" height="42"/>
+          <text id="t-tm" class="zone-tag" x="780" y="414" text-anchor="middle">팀원 · 팀원 노트북</text>
+
+          <!-- tracks (invisible) -->
+          <path id="sp-push" class="motion-path" d="M272,320 C300,200 370,176 440,176"/>
+          <path id="sp-pr" class="motion-path" d="M235,255 C300,175 470,176 575,176"/>
+          <path id="sp-merge" class="motion-path" d="M440,176 C440,140 455,130 455,101"/>
+          <path id="sp-pull" class="motion-path" d="M455,101 C600,90 680,200 690,320"/>
+          <path id="sp-push2" class="motion-path" d="M690,292 C680,200 520,176 440,176"/>
+          <path id="sp-pr2" class="motion-path" d="M740,250 C700,180 640,176 575,176"/>
+          <path id="sp-merge2" class="motion-path" d="M440,176 C470,176 500,130 510,101"/>
+          <path id="sp-pull2" class="motion-path" d="M510,101 C420,101 300,200 272,292"/>
+          <path id="sp-tmerge3" class="motion-path" d="M690,264 C690,150 600,101 565,101"/>
+          <path id="sp-push3" class="motion-path" d="M272,264 C300,180 380,176 440,176"/>
+          <path id="sp-pull3" class="motion-path" d="M565,101 C420,130 140,170 92,320"/>
+          <path id="sp-deploy" class="motion-path" d="M455,118 C455,215 390,205 390,262"/>
+          <path id="sp-push4" class="motion-path" d="M272,236 C320,120 560,60 620,101"/>
+          <path id="sp-pull4" class="motion-path" d="M620,101 C700,101 700,180 690,236"/>
+          <!-- trails drawn while something flies -->
+          <path id="tr-push" class="trail me" pathLength="1" d="M272,320 C300,200 370,176 440,176"/>
+          <path id="tr-pr" class="trail pr" pathLength="1" d="M235,255 C300,175 470,176 575,176"/>
+          <path id="tr-merge" class="trail me" pathLength="1" d="M440,176 C440,140 455,130 455,101"/>
+          <path id="tr-pull" class="trail me" pathLength="1" d="M455,101 C600,90 680,200 690,320"/>
+          <path id="tr-push2" class="trail tm" pathLength="1" d="M690,292 C680,200 520,176 440,176"/>
+          <path id="tr-pr2" class="trail pr" pathLength="1" d="M740,250 C700,180 640,176 575,176"/>
+          <path id="tr-merge2" class="trail tm" pathLength="1" d="M440,176 C470,176 500,130 510,101"/>
+          <path id="tr-pull2" class="trail tm" pathLength="1" d="M510,101 C420,101 300,200 272,292"/>
+          <path id="tr-tmerge3" class="trail tm" pathLength="1" d="M690,264 C690,150 600,101 565,101"/>
+          <path id="tr-push3" class="trail me" pathLength="1" d="M272,264 C300,180 380,176 440,176"/>
+          <path id="tr-pull3" class="trail tm" pathLength="1" d="M565,101 C420,130 140,170 92,320"/>
+          <path id="tr-deploy" class="trail pr" pathLength="1" d="M455,118 C455,215 390,205 390,262"/>
+          <path id="tr-push4" class="trail me" pathLength="1" d="M272,236 C320,120 560,60 620,101"/>
+          <path id="tr-pull4" class="trail me" pathLength="1" d="M620,101 C700,101 700,180 690,236"/>
+
+          <!-- conflict marker between my branch copy and main -->
+          <g id="clash" class="vis">
+            <line class="clash-line" x1="462" y1="164" x2="548" y2="116"/>
+            <g transform="translate(505 140)">
+              <circle class="clash-dot" r="12"/>
+              <text class="clash-mark" y="5" text-anchor="middle">!</text>
+            </g>
+          </g>
+
+          <!-- PR card -->
+          <g id="pr" class="vis" transform="translate(575 176)">
+            <g class="popper">
+              <rect class="pr-card" x="-64" y="-15" width="128" height="30" rx="15"/>
+              <text id="pr-text" class="pr-text" x="0" y="4" text-anchor="middle">PR #12 · 리뷰 대기</text>
+            </g>
+          </g>
+
+          <!-- commit boxes (id, colour, label) -->
+          <g id="box-me" class="vis" transform="translate(272 320)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">a1b2c3d</text></g></g></g>
+          <g id="box-fly" class="vis" transform="translate(440 176)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">a1b2c3d</text></g></g></g>
+          <g id="box-tm1" class="vis" transform="translate(690 320)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">a1b2c3d</text></g></g></g>
+          <g id="box-tm2" class="vis" transform="translate(690 292)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">e5f6a7b</text></g></g></g>
+          <g id="box-fly2" class="vis" transform="translate(440 176)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">e5f6a7b</text></g></g></g>
+          <g id="box-me2" class="vis" transform="translate(272 292)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">e5f6a7b</text></g></g></g>
+          <g id="box-me3" class="vis" transform="translate(272 264)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">c7d8e9f</text></g></g></g>
+          <g id="box-tm3" class="vis" transform="translate(690 264)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">f0a1b2c</text></g></g></g>
+          <g id="box-fly3" class="vis" transform="translate(565 101)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">f0a1b2c</text></g></g></g>
+          <g id="box-fly4" class="vis" transform="translate(440 176)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">c7d8e9f</text></g></g></g>
+          <g id="box-left" class="vis" transform="translate(92 320)"><g class="popper"><g class="cbox-wrap"><rect class="cbox tm" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">f0a1b2c</text></g></g></g>
+          <g id="box-me4" class="vis" transform="translate(272 236)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">d4e5f6a</text></g></g></g>
+          <g id="box-fly5" class="vis" transform="translate(620 101)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">d4e5f6a</text></g></g></g>
+          <g id="box-tm4" class="vis" transform="translate(690 236)"><g class="popper"><g class="cbox-wrap"><rect class="cbox me" x="-25" y="-14" width="50" height="28" rx="5"/><text class="cbox-text" x="0" y="4" text-anchor="middle">d4e5f6a</text></g></g></g>
+
+          <!-- the deploy package -->
+          <g id="pkg" class="vis" transform="translate(455 118)" style="opacity: 0"><g class="popper"><rect class="pkg" x="-22" y="-11" width="44" height="22" rx="11"/><text class="pkg-text" y="4" text-anchor="middle">배포</text></g></g>
+
+          <!-- speech bubbles -->
+          <g id="say-me" class="vis" transform="translate(160 194)">
+            <g class="popper">
+              <rect class="say" x="-80" y="-21" width="160" height="38" rx="12"/>
+              <path class="say" d="M-8,16 L0,29 L8,16" style="stroke-linejoin: round"/>
+              <rect x="-10" y="13" width="20" height="5" style="fill: var(--surface)"/>
+              <text class="say-text" x="0" y="3" text-anchor="middle"></text>
+            </g>
+          </g>
+          <g id="say-tm" class="vis" transform="translate(800 194)">
+            <g class="popper">
+              <rect class="say" x="-80" y="-21" width="160" height="38" rx="12"/>
+              <path class="say" d="M-8,16 L0,29 L8,16" style="stroke-linejoin: round"/>
+              <rect x="-10" y="13" width="20" height="5" style="fill: var(--surface)"/>
+              <text class="say-text" x="0" y="3" text-anchor="middle"></text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="player">
+        <div class="controls">
+          <button type="button" class="prev" aria-label="이전 단계"><svg viewBox="0 0 12 12"><path d="M9 1 L3 6 L9 11 Z"/></svg>이전</button>
+          <button type="button" class="play"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg><span>재생</span></button>
+          <button type="button" class="next" aria-label="다음 단계">다음<svg viewBox="0 0 12 12"><path d="M3 1 L9 6 L3 11 Z"/></svg></button>
+          <button type="button" class="snd" id="snd" aria-pressed="false" title="효과음 켜고 끄기"><svg viewBox="0 0 16 16"><path d="M2 6 H5 L9 2 V14 L5 10 H2 Z"/><path class="wave" d="M11 5.5 Q13 8 11 10.5 M12.8 3.8 Q16 8 12.8 12.2" style="fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round"/><path class="mute" d="M11 6 L15 10 M15 6 L11 10" style="fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round"/></svg><span>소리 꺼짐</span></button>
+          <div class="dots"></div>
+        </div>
+        <p class="swipe-tip">장면을 옆으로 밀어도 넘어가요</p>
+        <div class="caption" aria-live="polite">
+          <div class="head"><span class="count">20단계</span><span class="t">두 사람이 login.html을 주고받기까지</span><code></code></div>
+          <p class="d">재생을 누르면 장면이 순서대로 움직여요.</p>
+        </div>
+      </div>
+
+      </div>
+
+      <div class="mtabs" role="tablist" aria-label="아래에 볼 내용">
+        <button type="button" role="tab" data-tab="desc" aria-selected="true">설명</button>
+        <button type="button" role="tab" data-tab="board" aria-selected="false">각자 가진 버전</button>
+        <button type="button" role="tab" data-tab="screen" aria-selected="false">화면 속 내용</button>
+      </div>
+
+      <div class="mdesc"><p id="mdesc">아래 버튼이나 장면을 밀어서 단계를 넘겨 보세요.</p></div>
+
+      <div class="board-wrap">
+        <span class="eyebrow">지금 각자 가진 login.html</span>
+        <table class="board">
+          <thead><tr><th scope="col"><span class="sr">누구</span></th><th scope="col">버튼 문구</th><th scope="col">이메일 칸 안내 문구</th></tr></thead>
+          <tbody>
+            <tr><th scope="row" class="me">나</th><td id="v-me-0"></td><td id="v-me-1"></td></tr>
+            <tr><th scope="row" class="gh">GitHub main</th><td id="v-gh-0"></td><td id="v-gh-1"></td></tr>
+            <tr><th scope="row" class="tm">팀원</th><td id="v-tm-0"></td><td id="v-tm-1"></td></tr>
+            <tr><th scope="row" class="pr">고객 화면</th><td id="v-pr-0"></td><td id="v-pr-1"></td></tr>
+          </tbody>
+        </table>
+        <p class="same" id="board-same" hidden>✓ 고객 화면까지 모두 같은 버전이에요</p>
+      </div>
+
+      <div class="screen" id="screen">
+        <div class="win swap">
+          <div class="win-bar"><span class="lights"><i></i><i></i><i></i></span><span class="who" id="scr-who">나의 노트북</span><span class="win-title" id="scr-title"></span></div>
+          <div class="win-body" id="scr-body"></div>
+        </div>
+        <div class="inside swap">
+          <span class="eyebrow" id="scr-label">지금 상태</span>
+          <dl class="kv" id="scr-note"></dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="eyebrow" style="border-top: 1px solid var(--line); padding-top: 28px; margin-bottom: -28px">조금 더 자세히 · 명령어 기준</div>
+
+  <!-- ================= 1 ================= -->
+  <section>
+    <h2>1. 파일이 이동하는 경로</h2>
+    <p>내 컴퓨터 안에서 세 단계를 거친 뒤 GitHub에 올라갑니다. 커밋은 내 컴퓨터에만 저장되고, 푸시해야 비로소 GitHub에 올라가요.</p>
+    <div class="figure" id="fig1">
+      <p class="swipe-hint">그림을 옆으로 밀어서 보세요 →</p>
+      <div class="canvas">
+        <svg viewBox="0 0 960 300" role="img" aria-label="작업 폴더에서 git add로 스테이징, git commit으로 로컬 저장소, git push로 GitHub 원격 저장소로 이동하고, git pull로 다시 받아오는 흐름">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)"/>
+            </marker>
+            <marker id="arr-cloud" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" style="fill: var(--cloud)"/>
+            </marker>
+            <marker id="arr-hot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" style="fill: var(--hot)"/>
+            </marker>
+          </defs>
+
+          <rect x="20" y="30" width="650" height="190" rx="14" style="fill: var(--tint-main); stroke: var(--main); stroke-dasharray: 6 5"/>
+          <text x="40" y="56" class="zone-label" style="fill: var(--main)">내 컴퓨터</text>
+          <rect x="740" y="30" width="200" height="190" rx="14" style="fill: var(--tint-cloud); stroke: var(--cloud); stroke-dasharray: 6 5"/>
+          <text x="760" y="56" class="zone-label" style="fill: var(--cloud)">인터넷 · GitHub</text>
+
+          <rect id="b0" class="box" x="40" y="90" width="150" height="90" rx="10"/>
+          <text x="115" y="132" text-anchor="middle" class="title">작업 폴더</text>
+          <text x="115" y="156" text-anchor="middle" class="sub">지금 고치는 파일</text>
+
+          <rect id="b1" class="box" x="270" y="90" width="150" height="90" rx="10"/>
+          <text x="345" y="132" text-anchor="middle" class="title">스테이징</text>
+          <text x="345" y="156" text-anchor="middle" class="sub">저장할 파일 고르기</text>
+
+          <rect id="b2" class="box key-local" x="500" y="90" width="150" height="90" rx="10"/>
+          <text x="575" y="132" text-anchor="middle" class="title">로컬 저장소</text>
+          <text x="575" y="156" text-anchor="middle" class="sub">커밋 기록 보관</text>
+
+          <rect id="b3" class="box key-cloud" x="765" y="90" width="150" height="90" rx="10"/>
+          <text x="840" y="132" text-anchor="middle" class="title">원격 저장소</text>
+          <text x="840" y="156" text-anchor="middle" class="sub">모두가 보는 사본</text>
+
+          <line id="f-add" class="flow" x1="194" y1="135" x2="264" y2="135" marker-end="url(#arr)" data-marker="arr"/>
+          <text id="l-add" class="mono flow-label" x="230" y="124" text-anchor="middle">add</text>
+          <line id="f-commit" class="flow" x1="424" y1="135" x2="494" y2="135" marker-end="url(#arr)" data-marker="arr"/>
+          <text id="l-commit" class="mono flow-label" x="460" y="124" text-anchor="middle">commit</text>
+          <line id="f-push" class="flow cloudline" x1="654" y1="135" x2="759" y2="135" style="stroke-width: 2.5" marker-end="url(#arr-cloud)" data-marker="arr-cloud"/>
+          <text id="l-push" class="mono flow-label" x="706" y="124" text-anchor="middle" style="fill: var(--cloud)">push</text>
+
+          <path id="f-pull" class="flow cloudline dashed" d="M840,184 V258 H115 V188" marker-end="url(#arr-cloud)" data-marker="arr-cloud"/>
+          <rect x="370" y="246" width="230" height="26" rx="6" style="fill: var(--surface)"/>
+          <text id="l-pull" class="mono flow-label" x="485" y="264" text-anchor="middle" style="fill: var(--cloud)">pull · 최신 내용 받아오기</text>
+
+          <!-- invisible tracks the file icon travels along -->
+          <path id="m1" class="motion-path" d="M115,90 Q230,40 345,90"/>
+          <path id="m2" class="motion-path" d="M345,90 Q460,40 575,90"/>
+          <path id="m3" class="motion-path" d="M575,90 Q707,20 840,90"/>
+          <path id="m4" class="motion-path" d="M840,90 V258 H115 V90"/>
+
+          <g id="packet" class="packet" transform="translate(115 90)" aria-hidden="true">
+            <path class="sheet" d="M-12,-16 H5 L12,-9 V16 H-12 Z"/>
+            <path class="ink" d="M-6,-4 H6 M-6,2 H6 M-6,8 H2"/>
+          </g>
+        </svg>
+      </div>
+      <div class="player" data-player="1">
+        <div class="controls">
+          <button type="button" class="prev" aria-label="이전 단계"><svg viewBox="0 0 12 12"><path d="M9 1 L3 6 L9 11 Z"/></svg>이전</button>
+          <button type="button" class="play"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg><span>재생</span></button>
+          <button type="button" class="next" aria-label="다음 단계">다음<svg viewBox="0 0 12 12"><path d="M3 1 L9 6 L3 11 Z"/></svg></button>
+          <div class="dots"></div>
+        </div>
+        <div class="caption" aria-live="polite">
+          <div class="head"><span class="count">5단계</span><span class="t">파일 한 장이 GitHub까지 가는 길</span><code></code></div>
+          <p class="d">재생을 누르면 파일 아이콘이 단계별로 이동하며 보여 드려요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 2 ================= -->
+  <section>
+    <h2>2. 함께 작업하는 방식: 브랜치 → PR → 머지</h2>
+    <p>원본(main)을 직접 고치지 않고, 내 작업용 갈래(브랜치)를 따로 만들어 작업합니다. 다 되면 PR로 합쳐 달라고 요청하고, 리뷰를 통과하면 원본에 합칩니다.</p>
+    <div class="figure" id="fig2">
+      <p class="swipe-hint">그림을 옆으로 밀어서 보세요 →</p>
+      <div class="canvas">
+        <svg viewBox="0 0 960 280" role="img" aria-label="main 브랜치에서 feature 브랜치를 만들어 커밋하고 PR을 연 뒤 리뷰를 거쳐 main에 머지하는 흐름">
+          <line class="rail main" x1="40" y1="90" x2="920" y2="90"/>
+          <text x="40" y="66" class="mono" style="fill: var(--main)">main · 원본</text>
+
+          <path class="rail feature draw" data-s="1" pathLength="1" d="M200,90 C250,90 250,190 300,190 H560"/>
+          <path class="rail feature draw" data-s="4" pathLength="1" d="M560,190 C610,190 610,90 680,90"/>
+          <text class="mono fade" data-s="1" x="300" y="222" style="fill: var(--feature)">feature/로그인 · 내 작업 갈래</text>
+
+          <circle class="dot main" cx="90" cy="90" r="9"/>
+          <circle class="dot main" cx="200" cy="90" r="9"/>
+
+          <circle class="dot feature" data-s="2" cx="340" cy="190" r="9" style="transition-delay: 0s"/>
+          <circle class="dot feature" data-s="2" cx="430" cy="190" r="9" style="transition-delay: .35s"/>
+          <circle class="dot feature" data-s="2" cx="520" cy="190" r="9" style="transition-delay: .7s"/>
+
+          <circle class="dot merge" data-s="4" cx="680" cy="90" r="13" style="transition-delay: .75s"/>
+          <circle class="dot main" data-s="5" cx="820" cy="90" r="9"/>
+
+          <g class="fade" data-s="1">
+            <text class="note" data-n="1" x="200" y="40" text-anchor="middle">① 브랜치 만들기</text>
+            <line x1="200" y1="48" x2="200" y2="76" style="stroke: var(--line); stroke-width: 1.5"/>
+          </g>
+          <text class="note fade" data-s="2" data-n="2" x="430" y="150" text-anchor="middle">② 커밋하고 푸시</text>
+
+          <g class="fade" data-s="3">
+            <rect class="pr-box" x="330" y="236" width="270" height="32" rx="8"/>
+            <text class="note" data-n="3" x="465" y="257" text-anchor="middle" style="font-size: 14px">③ PR 열기 → 팀원이 리뷰</text>
+          </g>
+          <g class="fade" data-s="3" style="transition-delay: .6s">
+            <rect class="bubble" x="618" y="236" width="128" height="32" rx="16"/>
+            <path class="bubble" d="M626,244 L612,252 L626,256" style="stroke: none"/>
+            <text x="682" y="257" text-anchor="middle" style="font-size: 13px; fill: var(--muted)">리뷰: 좋아요 ✓</text>
+          </g>
+
+          <g class="fade" data-s="4">
+            <text class="note" data-n="4" x="680" y="40" text-anchor="middle">④ 머지(합치기)</text>
+            <line x1="680" y1="48" x2="680" y2="72" style="stroke: var(--line); stroke-width: 1.5"/>
+          </g>
+
+          <g class="fade" data-s="5">
+            <text x="820" y="128" text-anchor="middle" class="sub">이후 작업은</text>
+            <text x="820" y="146" text-anchor="middle" class="sub">합쳐진 main에서</text>
+          </g>
+        </svg>
+      </div>
+      <div class="player" data-player="2">
+        <div class="controls">
+          <button type="button" class="prev" aria-label="이전 단계"><svg viewBox="0 0 12 12"><path d="M9 1 L3 6 L9 11 Z"/></svg>이전</button>
+          <button type="button" class="play"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg><span>재생</span></button>
+          <button type="button" class="next" aria-label="다음 단계">다음<svg viewBox="0 0 12 12"><path d="M3 1 L9 6 L3 11 Z"/></svg></button>
+          <div class="dots"></div>
+        </div>
+        <div class="caption" aria-live="polite">
+          <div class="head"><span class="count">6단계</span><span class="t">원본을 지키면서 함께 고치는 법</span><code></code></div>
+          <p class="d">재생을 누르면 브랜치가 갈라지고 다시 합쳐지는 과정을 순서대로 그려요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>용어 한 줄 정리</h2>
+    <ul class="steps">
+      <li><span class="name">커밋 <code>git commit</code></span><p>지금 상태를 메모와 함께 저장해요. 게임의 세이브 포인트와 같아요.</p></li>
+      <li class="remote"><span class="name">푸시 <code>git push</code></span><p>내 컴퓨터의 커밋을 GitHub에 올려요.</p></li>
+      <li class="remote"><span class="name">풀 <code>git pull</code></span><p>GitHub에 올라온 최신 내용을 내 컴퓨터로 받아와요.</p></li>
+      <li><span class="name">브랜치 <code>git switch -c</code></span><p>원본은 그대로 두고 따로 작업할 갈래를 만들어요.</p></li>
+      <li class="team"><span class="name">PR <code>Pull Request</code></span><p>"내 브랜치를 원본에 합쳐 주세요"라는 요청이에요. 여기서 리뷰와 코멘트를 주고받아요.</p></li>
+      <li class="team"><span class="name">머지 <code>Merge</code></span><p>리뷰를 통과한 브랜치를 원본(main)에 합쳐요.</p></li>
+      <li class="remote"><span class="name">배포 <code>Deploy</code></span><p>main의 코드를 운영 서버에 올려서 고객 화면을 바꿔요. 보통 main이 바뀌면 자동으로 실행돼요.</p></li>
+      <li class="remote"><span class="name">테스트 서버 <code>Staging</code></span><p>운영에 올리기 전 test.shop.com 같은 연습용 서버에서 먼저 확인하는 곳이에요. 팀마다 있을 수도, 없을 수도 있어요.</p></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>자주 헷갈리는 것들</h2>
+    <div class="compare">
+      <div><strong>Git과 GitHub</strong><p>Git은 내 컴퓨터에서 버전을 기록하는 프로그램이고, GitHub는 그 기록을 올려 두고 함께 보는 웹사이트예요.</p></div>
+      <div><strong>커밋과 푸시</strong><p>커밋은 내 컴퓨터에만 저장해요. 푸시를 해야 다른 사람도 내 변경을 볼 수 있어요.</p></div>
+      <div><strong>푸시하면 서비스가 바뀐다?</strong><p>아니에요. 푸시는 GitHub 창고에 올리는 것뿐이에요. 고객 화면은 main에 머지된 뒤 배포가 돼야 바뀌어요.</p></div>
+      <div><strong>내 화면에서 되면 다 된다?</strong><p>내 노트북(localhost)과 운영 서버는 설정과 데이터가 달라요. 그래서 리뷰와 테스트를 거쳐서 올려요.</p></div>
+      <div><strong>풀을 받으면 고객 화면도 맞춰진다?</strong><p>풀은 내 노트북의 코드만 최신으로 바꿔요. 고객 화면과는 상관없어요.</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PLAY_ICON = '<path d="M2 1 L11 6 L2 11 Z"/>';
+  var PAUSE_ICON = '<path d="M2 1 H5 V11 H2 Z M7 1 H10 V11 H7 Z"/>';
+
+  /* ---------- generic step player ---------- */
+  function Player(root, steps, apply, interval) {
+    var n = -1, timer = null, playing = false;
+    var playBtn = root.querySelector('.play');
+    var dotsEl = root.querySelector('.dots');
+    var cap = root.querySelector('.caption');
+    var dots = [], parts = [];
+    if (steps[0].part) {
+      /* long stories: one tappable segment per part, filled as you go */
+      dotsEl.classList.add('parts');
+      steps.forEach(function (s, i) {
+        var last = parts[parts.length - 1];
+        if (!last || last.name !== s.part) parts.push({ name: s.part, first: i, count: 1 });
+        else last.count++;
+      });
+      parts.forEach(function (p) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'partbtn';
+        b.title = p.name;
+        b.setAttribute('aria-label', p.name + ' 처음으로');
+        b.innerHTML = '<span class="pb-name">' + p.name.split(' · ')[0] + '</span><span class="pb-bar"><i></i></span>';
+        b.addEventListener('click', function () { pause(); go(p.first, false); });
+        dotsEl.appendChild(b);
+        p.el = b;
+      });
+    } else {
+      dots = steps.map(function (s, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', (i + 1) + '단계: ' + s.t);
+        b.addEventListener('click', function () { pause(); go(i, false); });
+        dotsEl.appendChild(b);
+        return b;
+      });
+    }
+
+    function go(i, animate) {
+      var prev = n;
+      n = i;
+      var s = steps[i];
+      cap.querySelector('.count').textContent = (s.part ? s.part + ' · ' : '') + (i + 1) + ' / ' + steps.length;
+      cap.querySelector('.t').textContent = s.t;
+      cap.querySelector('code').textContent = s.cmd || '';
+      cap.querySelector('.d').textContent = s.d;
+      dots.forEach(function (d, k) {
+        if (k === i) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
+      });
+      parts.forEach(function (p) {
+        var done = i < p.first ? 0 : i >= p.first + p.count ? 1 : (i - p.first + 1) / p.count;
+        p.el.querySelector('i').style.width = (done * 100) + '%';
+        if (i >= p.first && i < p.first + p.count) p.el.setAttribute('aria-current', 'step'); else p.el.removeAttribute('aria-current');
+      });
+      apply(i, animate && !reduce && i === prev + 1);
+    }
+    function tick() {
+      if (n >= steps.length - 1) { timer = setTimeout(function () { go(0, false); schedule(); }, 1800); return; }
+      go(n + 1, true);
+      schedule();
+    }
+    function schedule() {
+      clearTimeout(timer);
+      if (!playing) return;
+      var wait = n >= steps.length - 1 ? 3200 : (steps[n].wait || interval);
+      timer = setTimeout(tick, wait);
+    }
+    function setPlayUI() {
+      playBtn.querySelector('svg').innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+      playBtn.querySelector('span').textContent = playing ? '일시정지' : '재생';
+    }
+    function play() {
+      playing = true; setPlayUI();
+      if (n < 0 || n >= steps.length - 1) go(0, false);
+      schedule();
+    }
+    function pause() { playing = false; clearTimeout(timer); setPlayUI(); }
+
+    playBtn.addEventListener('click', function () { playing ? pause() : play(); });
+    root.querySelector('.next').addEventListener('click', function () {
+      pause(); go(Math.min(n + 1, steps.length - 1), true);
+    });
+    root.querySelector('.prev').addEventListener('click', function () {
+      pause(); go(Math.max(n - 1, 0), false);
+    });
+    return {
+      play: play, pause: pause, started: function () { return n >= 0; },
+      go: function (i) { go(i, false); },
+      next: function () { pause(); go(Math.min(n + 1, steps.length - 1), true); },
+      prev: function () { pause(); go(Math.max(n - 1, 0), false); }
+    };
+  }
+
+  function autoStart(figure, player) {
+    /* phones step through by hand, at the reader's own pace */
+    if (reduce || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !player.started()) { player.play(); io.disconnect(); }
+      });
+    }, { threshold: 0.45 });
+    io.observe(figure);
+  }
+
+  /* ---------- diagram 1: the file travels ---------- */
+  var fig1 = document.getElementById('fig1');
+  var packet = document.getElementById('packet');
+  var rests = [[115, 90], [345, 90], [575, 90], [840, 90], [115, 90]];
+  var flows = ['add', 'commit', 'push', 'pull'];
+  var raf = null;
+
+  function placePacket(x, y) { packet.setAttribute('transform', 'translate(' + x + ' ' + y + ')'); }
+  function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function travel(path, ms) {
+    cancelAnimationFrame(raf);
+    var len = path.getTotalLength(), t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min((ts - t0) / ms, 1);
+      var p = path.getPointAtLength(len * ease(k));
+      placePacket(p.x, p.y);
+      if (k < 1) raf = requestAnimationFrame(frame);
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  var steps1 = [
+    { t: '파일을 고쳐요', cmd: '', d: '아직은 내 작업 폴더에만 있어요. Git은 무엇이 바뀌었는지만 알고 있는 상태예요.', box: 0, flow: null },
+    { t: '저장할 파일 고르기', cmd: 'git add', d: '이번에 기록할 파일만 골라 상자에 담아요. 여러 파일 중 일부만 담을 수도 있어요.', box: 1, flow: 'add' },
+    { t: '기록으로 저장하기', cmd: 'git commit', d: '"로그인 버튼 추가"처럼 메모를 붙여 저장해요. 아직 내 컴퓨터 안에만 있어요.', box: 2, flow: 'commit' },
+    { t: 'GitHub에 올리기', cmd: 'git push', d: '내 커밋을 GitHub로 보내요. 이제 팀원도 내 변경을 볼 수 있어요.', box: 3, flow: 'push' },
+    { t: '최신 내용 받아오기', cmd: 'git pull', d: '다른 사람이 올린 변경을 내 작업 폴더로 받아와요. 작업을 시작하기 전에 먼저 해 두면 좋아요.', box: 0, flow: 'pull', wait: 3600 }
+  ];
+
+  function apply1(i, animate) {
+    var s = steps1[i];
+    for (var b = 0; b < 4; b++) document.getElementById('b' + b).classList.toggle('hot', b === s.box);
+    flows.forEach(function (f) {
+      var line = document.getElementById('f-' + f), lab = document.getElementById('l-' + f);
+      var on = f === s.flow;
+      line.classList.toggle('hot', on);
+      lab.classList.toggle('hot', on);
+      line.setAttribute('marker-end', 'url(#' + (on ? 'arr-hot' : line.dataset.marker) + ')');
+    });
+    cancelAnimationFrame(raf);
+    if (animate && i > 0) travel(document.getElementById('m' + i), i === 4 ? 1900 : 1100);
+    else placePacket(rests[i][0], rests[i][1]);
+  }
+  var p1 = Player(fig1.querySelector('.player'), steps1, apply1, 2800);
+  autoStart(fig1, p1);
+
+  /* ---------- diagram 2: branch, PR, merge ---------- */
+  var fig2 = document.getElementById('fig2');
+  var parts = fig2.querySelectorAll('[data-s]');
+  var notes = fig2.querySelectorAll('[data-n]');
+  var steps2 = [
+    { t: 'main은 모두의 원본', cmd: 'main', d: '팀 전체가 함께 쓰는 원본이에요. 여기를 바로 고치면 실수가 모두에게 퍼져요.' },
+    { t: '내 작업 갈래 만들기', cmd: 'git switch -c feature/로그인', d: '원본을 복사한 갈래를 만들어 그 위에서 작업해요. 원본은 그대로예요.' },
+    { t: '갈래 위에서 커밋하고 푸시', cmd: 'git commit · git push', d: '작업할 때마다 커밋하고 GitHub에 올려요. 커밋이 하나씩 쌓여요.', wait: 3400 },
+    { t: 'PR로 합쳐 달라고 요청', cmd: 'Pull Request', d: 'GitHub에서 PR을 열면 팀원이 바뀐 코드를 보고 의견을 남겨요. 고칠 게 있으면 더 커밋해요.', wait: 3400 },
+    { t: '원본에 합치기', cmd: 'Merge', d: '리뷰를 통과하면 내 갈래를 main에 합쳐요. 이제 원본에도 내 작업이 들어가요.', wait: 3200 },
+    { t: '다음 작업은 새 main에서', cmd: 'git pull', d: '합쳐진 main을 받아와서 다음 작업도 같은 순서로 반복해요.' }
+  ];
+  function apply2(i, animate) {
+    parts.forEach(function (el) {
+      var k = +el.dataset.s;
+      if (!animate) { el.style.transitionProperty = 'none'; }
+      el.classList.toggle('off', k > i);
+    });
+    if (!animate) {
+      fig2.getBoundingClientRect();
+      parts.forEach(function (el) { el.style.transitionProperty = ''; });
+    }
+    notes.forEach(function (el) { el.classList.toggle('now', +el.dataset.n === i); });
+  }
+  var p2 = Player(fig2.querySelector('.player'), steps2, apply2, 2800);
+  autoStart(fig2, p2);
+
+  /* ---------- scene: people ---------- */
+  var fig0 = document.getElementById('fig0');
+  var $ = function (id) { return document.getElementById(id); };
+  var P = {
+    desk: [272, 320], deskTop: [272, 292], desk3: [272, 264], desk4: [272, 236], deskLeft: [92, 320],
+    tmDesk: [690, 320], tmTop: [690, 292], tm3: [690, 264], tm4: [690, 236],
+    branch: [440, 176], main1: [455, 101], main2: [510, 101], main3: [565, 101], main4: [620, 101],
+    prMe: [235, 255], prTm: [740, 250], prEnd: [575, 176]
+  };
+  var rafs = {}, trailTimers = {};
+
+  function moveTo(g, xy, rot) {
+    g.setAttribute('transform', 'translate(' + xy[0] + ' ' + xy[1] + ')' + (rot ? ' rotate(' + rot + ')' : ''));
+  }
+  function reflow(el) { if (el.getBBox) el.getBBox(); void el.offsetWidth; }
+  function replay(el, cls) { el.classList.remove(cls); reflow(el); el.classList.add(cls); }
+  function pop(g) { if (g.id.indexOf('box') === 0) sfx('pop'); if (!reduce) replay(g.querySelector('.popper'), 'pop'); }
+  function land(g) { if (!reduce) replay(g.querySelector('.popper'), 'land'); }
+  function show(g, on) { g.style.opacity = on ? 1 : 0; }
+  function resetTrail(t) {
+    clearTimeout(trailTimers[t.id]);
+    t.classList.remove('gone');
+    t.style.strokeDashoffset = 1;
+  }
+  function fly(g, name, from, to, ms) {
+    var path = $('sp-' + name), trail = $('tr-' + name);
+    cancelAnimationFrame(rafs[g.id]);
+    resetTrail(trail);
+    moveTo(g, from);
+    var len = path.getTotalLength(), t0 = null, dir = to[0] >= from[0] ? 1 : -1;
+    sfx('whoosh', ms);
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min((ts - t0) / ms, 1), e = ease(k);
+      var p = path.getPointAtLength(len * e);
+      moveTo(g, [p.x, p.y], Math.sin(k * Math.PI) * -9 * dir);
+      trail.style.strokeDashoffset = 1 - e;
+      if (k < 1) { rafs[g.id] = requestAnimationFrame(frame); return; }
+      moveTo(g, to);
+      sfx('land');
+      land(g);
+      trailTimers[trail.id] = setTimeout(function () { trail.classList.add('gone'); }, 500);
+    }
+    rafs[g.id] = requestAnimationFrame(frame);
+  }
+
+  var lastSay = { 'say-me': null, 'say-tm': null };
+  function say(id, text) {
+    var g = $(id);
+    if (!text) { show(g, false); lastSay[id] = null; return; }
+    var t = g.querySelector('text'), r = g.querySelector('rect.say');
+    t.textContent = text;
+    var w = Math.max(90, Math.ceil(t.getComputedTextLength()) + 32);
+    r.setAttribute('x', -w / 2);
+    r.setAttribute('width', w);
+    show(g, true);
+    if (lastSay[id] !== text) pop(g);
+    lastSay[id] = text;
+  }
+
+  /* screen content helpers */
+  function L(cls, html) { return '<span class="l ' + cls + '">' + html + '</span>'; }
+  function N(n) { return '<span class="n">' + n + '</span>'; }
+  function kv(rows) { return rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join(''); }
+  function C(id, who) { return '<code style="color: var(--' + (who === 'tm' ? 'mate' : 'main') + ')">' + id + '</code>'; }
+  var A = C('a1b2c3d', 'me'), E = C('e5f6a7b', 'tm');
+  var BTN_OLD = '&lt;button&gt;로그인&lt;/button&gt;';
+  var BTN_NEW = '&lt;button&gt;로그인하기&lt;/button&gt;';
+  var IN_OLD = '&lt;input name="email"&gt;';
+  var IN_NEW = '&lt;input name="email" placeholder="이메일을 입력하세요"&gt;';
+  var PLUS = '<span class="plus">+1</span> <span class="minus">−1</span>';
+  function pr(state, title, by, from, note) {
+    return '<span class="l gh"><span class="badge' + (state === 'Merged' ? ' merged' : '') + '">' + state + '</span>' +
+      '<h4>' + title + '</h4><span class="meta">' + by + ' 님이 ' + from + ' → main 으로 커밋 1개를 합쳐 달라고 요청했어요</span>' +
+      '<span class="comment"><b>' + by + ' · 설명</b>' + note + '</span>' +
+      '<span class="meta">변경된 파일 1개 · login.html ' + PLUS + '</span></span>';
+  }
+  function hist(rows) {
+    return '<span class="hist">' + rows.map(function (r, k) {
+      return '<span' + (k === 0 ? ' class="new"' : '') + '><code>' + r[0] + '</code>' + r[1] + '</span>';
+    }).join('') + '</span>';
+  }
+
+  /* [button, email hint] for me / GitHub main / teammate, per step */
+  var V = [
+    [[1,0],[0,0],[0,0],[0,0]], [[1,0],[0,0],[0,0],[0,0]], [[1,0],[0,0],[0,0],[0,0]], [[1,0],[0,0],[0,0],[0,0]],
+    [[1,0],[0,0],[0,0],[0,0]], [[1,0],[1,0],[0,0],[0,0]], [[1,0],[1,0],[0,0],[1,0]], [[1,0],[1,0],[1,0],[1,0]],
+    [[1,0],[1,0],[1,1],[1,0]], [[1,0],[1,0],[1,1],[1,0]], [[1,0],[1,0],[1,1],[1,0]],
+    [[1,0],[1,1],[1,1],[1,1]], [[1,1],[1,1],[1,1],[1,1]],
+    [[2,1],[1,1],[3,1],[1,1]], [[2,1],[3,1],[3,1],[3,1]], [[2,1],[3,1],[3,1],[3,1]], [[4,1],[3,1],[3,1],[3,1]],
+    [[2,1],[3,1],[3,1],[3,1]], [[2,1],[2,1],[3,1],[2,1]], [[2,1],[2,1],[2,1],[2,1]]
+  ];
+  var LABELS = [['"로그인"', '"로그인하기"', '"시작하기"', '"들어가기"', '⚠ 충돌 표시 중'], ['없음', '있음']];
+
+  var P5 = '5부 · 같은 줄을 동시에 고치면';
+  var P1 = '1부 · 내 작업 보내기', P2 = '2부 · 합치고 고객에게 배포하기', P3 = '3부 · 팀원 작업 보내기', P4 = '4부 · 내가 합치고 받기';
+  var steps0 = [
+    { part: P1, t: '내가 파일을 고쳐요', cmd: '', here: 'me',
+      d: '내 노트북에서 login.html 14번째 줄의 버튼 문구를 고쳤어요. 아직 아무 기록도 없고, 나만 알고 있는 변경이에요.',
+      me: '버튼 문구를 바꿔 볼까?', tm: null,
+      who: 'me', title: '편집기 — shop/login.html',
+      body: L('', N(12) + '&lt;form id="login"&gt;') + L('', N(13) + '  ' + IN_OLD) +
+            L('del', N(14) + '− ' + BTN_OLD) + L('add', N(14) + '+ ' + BTN_NEW) + L('', N(15) + '&lt;/form&gt;'),
+      label: '지금 상태',
+      note: kv([['바뀐 파일', 'login.html'], ['바뀐 줄', '14번째 줄 하나'], ['Git 기록', '아직 없음'], ['아는 사람', '나 혼자']]) },
+
+    { part: P1, t: '내가 커밋해요', cmd: 'git switch -c · git add · git commit', here: 'me',
+      d: '먼저 내 작업용 브랜치를 만들어요. 그다음 바뀐 내용을 상자에 담고 "로그인 버튼 문구 수정"이라는 이름표를 붙여요. 이 상자가 커밋이에요.',
+      me: '여기까지 기록!', tm: null,
+      who: 'me', title: '터미널 — ~/shop',
+      body: L('cmd', 'git switch -c feature/login-button') + L('out', "Switched to a new branch 'feature/login-button'") +
+            L('cmd', 'git add login.html') + L('cmd', 'git commit -m "로그인 버튼 문구 수정"') +
+            L('out', '[feature/login-button ' + A + '] 로그인 버튼 문구 수정') + L('out', ' 1 file changed, 1 insertion(+), 1 deletion(-)'),
+      label: '상자(커밋) 안에 든 것',
+      note: kv([['상자 번호', A + ' (자동으로 붙어요)'], ['이름표', '로그인 버튼 문구 수정'], ['만든 사람', '나 · 10월 8일 17:40'], ['바뀐 내용', 'login.html 14번째 줄 ' + PLUS], ['작업 브랜치', 'feature/login-button']]) },
+
+    { part: P1, t: '내가 GitHub에 푸시해요', cmd: 'git push', here: 'cloud', wait: 3800,
+      d: '상자의 복사본을 GitHub로 보내요. 내 책상의 상자는 그대로 남아요. GitHub에서는 main이 아니라 브랜치 선반에 먼저 놓여요.',
+      me: 'GitHub에 올리자', tm: null,
+      who: 'me', title: '터미널 — ~/shop',
+      body: L('cmd', 'git push origin feature/login-button') + L('out', 'To github.com/team/shop.git') +
+            L('out', ' * [new branch]  feature/login-button -&gt; feature/login-button'),
+      label: 'GitHub로 보내는 것',
+      note: kv([['보내는 것', A + ' 복사본'], ['내 책상', '상자 그대로 있음'], ['놓이는 자리', '브랜치 선반'], ['main', '아직 그대로']]) },
+
+    { part: P1, t: '내가 PR을 열어요', cmd: 'Pull Request', here: 'cloud',
+      d: 'GitHub에 "내 상자를 main에 넣어 주세요"라는 요청서를 올려요. 왜 바꿨는지도 함께 적어요. 이 요청서가 PR이에요.',
+      me: '합쳐 주세요!', tm: null,
+      who: 'me', title: 'github.com/team/shop/pull/12',
+      body: pr('Open', '로그인 버튼 문구 수정 #12', '나', 'feature/login-button', '버튼 문구를 "로그인하기"로 바꿨어요. 무엇을 하는 버튼인지 더 분명하게 보이도록요.'),
+      label: 'PR(요청서)에 담기는 것',
+      note: kv([['무엇을', '상자 ' + A], ['어디에서', 'feature/login-button'], ['어디로', 'main'], ['설명', '왜 바꿨는지'], ['상태', '리뷰 기다리는 중']]) },
+
+    { part: P2, t: '팀원이 리뷰해요', cmd: '리뷰', here: 'tm', wait: 3800,
+      d: '팀원은 파일 전체가 아니라 바뀐 줄만 보면 돼요. 의견을 남기고, 괜찮으면 승인해요. 고칠 게 있으면 내가 다시 커밋해서 올리면 돼요.',
+      me: null, tm: '좋아요, 승인할게요',
+      who: 'tm', title: 'github.com/team/shop/pull/12/files',
+      body: L('del', N(14) + '− ' + BTN_OLD) + L('add', N(14) + '+ ' + BTN_NEW) +
+            '<span class="l gh" style="padding-top: 10px"><span class="comment"><b>팀원 · 14번째 줄 코멘트</b>문구가 훨씬 분명해졌네요. 좋아요!</span><span class="badge">✓ 승인 (Approve)</span></span>',
+      label: '리뷰에서 오가는 것',
+      note: kv([['보는 것', '바뀐 줄만 ' + PLUS], ['남기는 것', '줄마다 코멘트'], ['결정', '승인 또는 수정 요청']]) },
+
+    { part: P2, t: '팀원이 머지해요', cmd: 'Merge', here: 'cloud', wait: 3800,
+      d: '승인한 PR의 Merge 버튼을 누르면 상자가 브랜치 선반에서 main 선반으로 옮겨져요. 이제 GitHub의 원본 버튼이 "로그인하기"가 됐어요. 하지만 고객이 보는 shop.com은 아직 그대로예요.',
+      me: null, tm: 'main에 합칠게요',
+      who: 'tm', title: 'github.com/team/shop/pull/12',
+      body: '<span class="l gh"><span class="badge merged">Merged</span><h4>로그인 버튼 문구 수정 #12</h4>' +
+            '<span class="meta">팀원 님이 커밋 1개를 main에 합쳤어요</span>' +
+            hist([['a1b2c3d', '로그인 버튼 문구 수정 · 방금'], ['9f8e7d6', '회원가입 페이지 추가'], ['3c4d5e6', '첫 화면 만들기']]) + '</span>',
+      label: '머지 후 달라진 것',
+      note: kv([['main 기록', '맨 위에 ' + A + ' 추가'], ['GitHub', '"로그인하기"'], ['팀원 노트북', '아직 옛 버전'], ['고객 화면', '아직 옛 버전']]) },
+
+    { part: P2, t: '고객 화면에 자동으로 배포돼요', cmd: 'GitHub Actions · 배포', here: 'prod', cam: 220, wait: 5200,
+      d: 'GitHub는 코드를 보관할 뿐이고, 고객이 보는 화면은 운영 서버에서 돌아가요. main이 바뀌면 자동 배포가 테스트와 빌드를 거쳐 운영 서버에 새 코드를 올려요. 그제야 고객 휴대폰의 버튼이 바뀌어요.',
+      me: null, tm: null,
+      who: 'gh', title: 'GitHub Actions — deploy.yml',
+      body: L('out', 'main에 새 커밋 ' + A + ' 도착 → 배포 시작') + L('gap', '') +
+            L('', '✓ 코드 내려받기') + L('', '✓ 테스트 실행 · 12개 통과') + L('', '✓ 빌드') +
+            L('add', '✓ shop.com 운영 서버에 배포 완료 · 1분 42초'),
+      label: '배포에서 일어나는 일',
+      note: kv([['시작 조건', 'main이 바뀌면 자동으로'], ['하는 일', '테스트 → 빌드 → 운영 서버에 올리기'], ['고객 화면', '"로그인하기"로 바뀜'], ['노트북들', '영향 없음']]) },
+
+    { part: P2, t: '팀원이 최신 버전을 받아요', cmd: 'git pull', here: 'tm', wait: 4000, pvDelay: 1500,
+      d: 'GitHub의 main이 바뀌었으니 팀원은 그 내용을 자기 노트북으로 받아와요. 상자 복사본이 팀원 책상에 놓이고 파일도 바뀌어요. 이제 세 곳이 모두 같아요.',
+      me: null, tm: '최신 버전 받았다',
+      who: 'tm', title: '터미널 — ~/shop',
+      body: L('cmd', 'git pull') + L('out', 'Updating 9f8e7d6..' + A) + L('out', 'Fast-forward') + L('out', ' login.html | 2 +-') +
+            L('gap', '') + L('add', N(14) + '+ ' + BTN_NEW),
+      label: '받아오는 것',
+      note: kv([['받는 것', A + ' 복사본'], ['바뀌는 파일', '팀원의 login.html'], ['결과', '세 곳 모두 같은 버전']]) },
+
+    { part: P3, t: '팀원이 고치고 커밋해요', cmd: 'git switch -c · git commit', here: 'tm',
+      d: '이번엔 팀원 차례예요. 방금 받은 최신 버전 위에서 13번째 줄 이메일 칸에 안내 문구를 넣어요. 자기 브랜치를 만들고 커밋하면 새 상자가 기존 상자 위에 쌓여요.',
+      me: null, tm: '안내 문구도 넣어야지',
+      who: 'tm', title: '편집기 · 터미널 — ~/shop',
+      body: L('del', N(13) + '− ' + IN_OLD) + L('add', N(13) + '+ ' + IN_NEW) + L('gap', '') +
+            L('cmd', 'git switch -c feature/email-hint') + L('cmd', 'git add login.html') +
+            L('cmd', 'git commit -m "이메일 입력칸 안내 문구 추가"') + L('out', '[feature/email-hint ' + E + '] 이메일 입력칸 안내 문구 추가'),
+      label: '팀원의 상자(커밋)',
+      note: kv([['상자 번호', E], ['이름표', '이메일 입력칸 안내 문구 추가'], ['만든 사람', '팀원 · 10월 8일 18:05'], ['바뀐 내용', 'login.html 13번째 줄 ' + PLUS], ['쌓인 위치', A + ' 위']]) },
+
+    { part: P3, t: '팀원이 푸시해요', cmd: 'git push', here: 'cloud', wait: 3800,
+      d: '팀원도 상자 복사본을 GitHub의 브랜치 선반으로 보내요. main은 아직 그대로예요.',
+      me: null, tm: 'GitHub에 올릴게요',
+      who: 'tm', title: '터미널 — ~/shop',
+      body: L('cmd', 'git push origin feature/email-hint') + L('out', 'To github.com/team/shop.git') +
+            L('out', ' * [new branch]  feature/email-hint -&gt; feature/email-hint'),
+      label: 'GitHub로 보내는 것',
+      note: kv([['보내는 것', E + ' 복사본'], ['놓이는 자리', '브랜치 선반'], ['main', '아직 그대로'], ['내 노트북', '아직 모름']]) },
+
+    { part: P3, t: '팀원이 PR을 열어요', cmd: 'Pull Request', here: 'cloud',
+      d: '팀원이 "내 상자를 main에 넣어 주세요"라는 요청서 #13을 올려요. 이번 리뷰어는 나예요.',
+      me: null, tm: '확인 부탁해요!',
+      who: 'tm', title: 'github.com/team/shop/pull/13',
+      body: pr('Open', '이메일 입력칸 안내 문구 추가 #13', '팀원', 'feature/email-hint', '입력칸이 비어 있으면 무엇을 넣을지 헷갈려서 안내 문구를 넣었어요.'),
+      label: 'PR(요청서)에 담기는 것',
+      note: kv([['무엇을', '상자 ' + E], ['어디에서', 'feature/email-hint'], ['어디로', 'main'], ['리뷰어', '나']]) },
+
+    { part: P4, t: '내가 리뷰하고 머지해요', cmd: '리뷰 · Merge', here: 'cloud', wait: 4200,
+      d: '이번엔 내가 바뀐 줄을 확인하고 승인한 뒤 Merge 버튼을 눌러요. 팀원의 상자가 main 선반에 올라가고, 자동 배포로 고객 화면에도 안내 문구가 생겨요. 하지만 내 노트북 파일은 아직 그대로예요.',
+      me: '좋아요, 합칠게요', tm: null,
+      who: 'me', title: 'github.com/team/shop/pull/13',
+      body: L('del', N(13) + '− ' + IN_OLD) + L('add', N(13) + '+ ' + IN_NEW) +
+            '<span class="l gh" style="padding-top: 10px"><span class="comment"><b>나 · 13번째 줄 코멘트</b>안내가 있으니 훨씬 친절하네요!</span>' +
+            '<span class="badge merged">Merged</span>' +
+            hist([['e5f6a7b', '이메일 입력칸 안내 문구 추가 · 방금'], ['a1b2c3d', '로그인 버튼 문구 수정'], ['9f8e7d6', '회원가입 페이지 추가']]) + '</span>',
+      label: '머지 후 달라진 것',
+      note: kv([['main 기록', '맨 위에 ' + E + ' 추가'], ['고객 화면', '자동 배포로 안내 문구 생김'], ['내 노트북', '아직 안내 문구 없음']]) },
+
+    { part: P4, t: '내가 팀원 작업을 받아와요', cmd: 'git switch main · git pull', here: 'me', wait: 4800, pvDelay: 1500,
+      d: '내 노트북에서 main으로 돌아와 GitHub의 최신 main을 받아요. 팀원의 상자가 내 상자 위에 쌓이고, 내 login.html에도 안내 문구가 생겨요. 세 곳이 다시 모두 같아졌어요.',
+      me: '팀원 작업도 받았다', tm: '이제 똑같네요',
+      who: 'me', title: '터미널 — ~/shop',
+      body: L('cmd', 'git switch main') + L('cmd', 'git pull') + L('out', 'Updating 9f8e7d6..' + E) + L('out', ' login.html | 4 ++--') +
+            L('gap', '') + L('add', N(13) + '+ ' + IN_NEW) + L('', N(14) + '  ' + BTN_NEW),
+      label: '받아오는 것',
+      note: kv([['받는 것', 'main의 새 상자 ' + E], ['바뀌는 파일', '내 login.html 13번째 줄'], ['결과', '세 곳 모두 같은 버전']]) },
+
+    { part: P5, t: '둘이 같은 줄을 동시에 고쳐요', cmd: '각자 git commit', here: 'both', cam: -1,
+      d: '이번엔 두 사람이 서로 모른 채 같은 14번째 줄을 고쳤어요. 나는 "시작하기", 팀원은 "들어가기". 각자 자기 브랜치에서 커밋해서 새 상자가 하나씩 쌓였어요.',
+      me: '시작하기가 낫겠다', tm: '들어가기가 낫겠다',
+      who: 'me', title: '편집기 — shop/login.html',
+      body: L('del', N(14) + '− ' + BTN_NEW) + L('add', N(14) + '+ &lt;button&gt;시작하기&lt;/button&gt;') +
+            L('gap', '') + L('out', '같은 시각, 팀원 노트북의 같은 줄') +
+            L('del', N(14) + '− ' + BTN_NEW) + L('theirs', N(14) + '+ &lt;button&gt;들어가기&lt;/button&gt;'),
+      label: '두 개의 상자',
+      note: kv([['내 상자', C('c7d8e9f', 'me') + ' → "시작하기"'], ['팀원 상자', C('f0a1b2c', 'tm') + ' → "들어가기"'], ['문제', '같은 줄을 서로 다르게 고침']]) },
+
+    { part: P5, t: '팀원이 먼저 main에 합쳐요', cmd: 'git push · PR #14 · Merge', here: 'cloud', cam: 400, wait: 4200,
+      d: '팀원이 먼저 올리고 PR #14를 머지했어요. 과정은 앞에서 본 것과 같아서 한 번에 보여 줄게요. main이 바뀌었으니 자동 배포로 고객 화면도 "들어가기"가 돼요.',
+      me: null, tm: '제가 먼저 합쳤어요',
+      who: 'tm', title: 'github.com/team/shop/pull/14',
+      body: '<span class="l gh"><span class="badge merged">Merged</span><h4>버튼 문구를 들어가기로 #14</h4>' +
+            '<span class="meta">팀원 님이 커밋 1개를 main에 합쳤어요</span>' +
+            hist([['f0a1b2c', '버튼 문구를 들어가기로 · 방금'], ['e5f6a7b', '이메일 입력칸 안내 문구 추가'], ['a1b2c3d', '로그인 버튼 문구 수정']]) + '</span>',
+      label: '지금 main',
+      note: kv([['main 14번째 줄', '"들어가기"'], ['고객 화면', '"들어가기"'], ['내 상자', C('c7d8e9f', 'me') + '는 아직 내 노트북에만']]) },
+
+    { part: P5, t: '나도 올렸더니 충돌이래요', cmd: 'git push · Pull Request', here: 'cloud', cam: 40, wait: 4400,
+      d: '내 상자를 올리고 PR #15를 열었더니 GitHub가 "충돌"이라고 알려 줘요. main은 "들어가기", 나는 "시작하기"로 같은 줄을 바꿔서, 어느 쪽을 쓸지 Git이 대신 정할 수 없어요. 충돌한 PR은 머지되지 않으니 고객 화면은 안전해요.',
+      me: '어? 충돌이래', tm: null,
+      who: 'me', title: 'github.com/team/shop/pull/15',
+      body: '<span class="l gh"><span class="badge">Open</span><h4>버튼 문구를 시작하기로 #15</h4>' +
+            '<span class="meta">나 님이 feature/start-button → main 으로 합쳐 달라고 요청했어요</span>' +
+            '<span class="conflict-box"><b>⚠ 충돌이 있어 합칠 수 없어요</b>This branch has conflicts that must be resolved · login.html 14번째 줄</span>' +
+            '<span class="meta">충돌을 풀기 전까지 Merge 버튼이 잠겨 있어요</span></span>',
+      label: '충돌이 뭐예요?',
+      note: kv([['main의 14번째 줄', '"들어가기"'], ['내 14번째 줄', '"시작하기"'], ['Git이 못 하는 일', '둘 중 하나 고르기'], ['정하는 사람', '사람이 직접'], ['고객 화면', '그대로 (충돌이 안 보여요)']]) },
+
+    { part: P5, t: '최신 main을 받아 충돌을 확인해요', cmd: 'git pull origin main', here: 'me', cam: 40, wait: 4800, sayDelay: 1600, pvDelay: 1500,
+      d: 'main을 내 브랜치로 받아오면 Git이 충돌한 줄에 표시를 해 둬요. <<<<<<< 부터 >>>>>>> 사이에 두 버전이 함께 들어 있어요. 그래서 내 노트북 화면(localhost)에는 표시가 그대로 보여 깨져 보이지만, 고장이 아니라 "하나를 골라 주세요"라는 뜻이에요.',
+      me: '둘 중 뭘 고르지?', tm: null,
+      who: 'me', title: '터미널 · 편집기 — ~/shop',
+      body: L('cmd', 'git pull origin main') +
+            L('bad', 'CONFLICT (content): Merge conflict in login.html') + L('gap', '') +
+            L('mark', N(14) + '&lt;&lt;&lt;&lt;&lt;&lt;&lt; 내 것 (HEAD)') +
+            L('add', N(15) + '&lt;button&gt;시작하기&lt;/button&gt;') +
+            L('mark', N(16) + '=======') +
+            L('theirs', N(17) + '&lt;button&gt;들어가기&lt;/button&gt;') +
+            L('mark', N(18) + '&gt;&gt;&gt;&gt;&gt;&gt;&gt; main (팀원 것)'),
+      label: '표시 읽는 법',
+      note: kv([['&lt;&lt;&lt;&lt;&lt;&lt;&lt; 아래', '내가 쓴 것'], ['======= 아래', 'main(팀원)이 쓴 것'], ['&gt;&gt;&gt;&gt;&gt;&gt;&gt;', '표시 끝'], ['할 일', '하나만 남기고 표시 줄 지우기']]) },
+
+    { part: P5, t: '상의해서 고르고 커밋해요', cmd: 'git add · git commit', here: 'both', cam: -1, wait: 4600,
+      d: '팀원과 이야기해서 "시작하기"로 정했어요. 표시 줄을 지우고 하나만 남긴 뒤 커밋하면 충돌이 풀려요. 이 결정도 상자 하나로 기록돼요.',
+      me: '좋아요, 그걸로!', tm: '시작하기로 하죠',
+      who: 'me', title: '편집기 · 터미널 — ~/shop',
+      body: L('add', N(14) + '&lt;button&gt;시작하기&lt;/button&gt;') + L('out', '    ← 표시 줄 세 개는 지웠어요') + L('gap', '') +
+            L('cmd', 'git add login.html') + L('cmd', 'git commit -m "충돌 해결: 시작하기로 결정"') +
+            L('out', '[feature/start-button ' + C('d4e5f6a', 'me') + '] 충돌 해결: 시작하기로 결정'),
+      label: '해결 상자 안에 든 것',
+      note: kv([['상자 번호', C('d4e5f6a', 'me')], ['이름표', '충돌 해결: 시작하기로 결정'], ['14번째 줄', '"시작하기" 하나만'], ['함께 담긴 것', 'main의 최신 내용']]) },
+
+    { part: P5, t: '다시 올리고 머지해요', cmd: 'git push · Merge', here: 'cloud', cam: 400, wait: 4200,
+      d: '해결한 상자를 다시 올리면 PR #15의 충돌 표시가 사라지고 Merge 버튼이 열려요. 팀원이 확인하고 머지하면 main이 "시작하기"가 되고, 자동 배포로 고객 화면도 바뀌어요.',
+      me: null, tm: '확인, 머지할게요',
+      who: 'tm', title: 'github.com/team/shop/pull/15',
+      body: '<span class="l gh"><span class="badge merged">Merged</span><h4>버튼 문구를 시작하기로 #15</h4>' +
+            '<span class="meta">충돌을 해결한 뒤 팀원 님이 main에 합쳤어요</span>' +
+            hist([['d4e5f6a', '충돌 해결: 시작하기로 결정 · 방금'], ['c7d8e9f', '버튼 문구를 시작하기로'], ['f0a1b2c', '버튼 문구를 들어가기로']]) + '</span>',
+      label: '머지 후 달라진 것',
+      note: kv([['main 14번째 줄', '"시작하기"'], ['고객 화면', '자동 배포로 "시작하기"'], ['팀원 노트북', '아직 "들어가기"']]) },
+
+    { part: P5, t: '팀원도 받아오면 끝', cmd: 'git switch main · git pull', here: 'tm', cam: 440, wait: 5200, pvDelay: 1500,
+      d: '팀원이 최신 main을 받아오면 팀원의 파일도 "시작하기"로 바뀌어요. 이제 두 노트북, GitHub, 고객 화면이 모두 같아요. 충돌은 이렇게 사람이 고르고, 그 결정을 커밋으로 남기면 끝나요.',
+      me: null, tm: '저도 맞췄어요',
+      who: 'tm', title: '터미널 — ~/shop',
+      body: L('cmd', 'git switch main') + L('cmd', 'git pull') + L('out', 'Updating e5f6a7b..' + C('d4e5f6a', 'me')) + L('out', 'Fast-forward') +
+            L('out', ' login.html | 2 +-') + L('gap', '') + L('add', N(14) + '+ &lt;button&gt;시작하기&lt;/button&gt;'),
+      label: '받아오는 것',
+      note: kv([['받는 것', '해결 상자 ' + C('d4e5f6a', 'me') + '가 들어간 main'], ['결과', '네 곳 모두 "시작하기"']]) }
+  ];
+
+  var WHO = { me: '나의 노트북', tm: '팀원의 노트북', gh: 'GitHub' };
+  var screenParts = fig0.querySelectorAll('.screen .swap'), swapTimer = null;
+  function fillScreen(s) {
+    var who = $('scr-who');
+    who.className = 'who' + (s.who === 'me' ? '' : ' ' + s.who);
+    who.textContent = WHO[s.who];
+    $('scr-title').textContent = s.title;
+    $('scr-label').textContent = s.label;
+    $('scr-note').innerHTML = s.note;
+    var body = $('scr-body');
+    body.innerHTML = s.body;
+    body.querySelectorAll('.l').forEach(function (el, k) { el.style.animationDelay = (k * 0.12) + 's'; });
+  }
+  function setScreen(s, animate) {
+    clearTimeout(swapTimer);
+    if (!animate || reduce) { fillScreen(s); screenParts.forEach(function (p) { p.classList.remove('out'); }); return; }
+    screenParts.forEach(function (p) { p.classList.add('out'); });
+    swapTimer = setTimeout(function () {
+      fillScreen(s);
+      screenParts.forEach(function (p) { p.classList.remove('out'); });
+    }, 230);
+  }
+
+  var prevV = null;
+  function setBoard(i) {
+    var v = V[i], keys = ['me', 'gh', 'tm', 'pr'];
+    keys.forEach(function (who, h) {
+      [0, 1].forEach(function (f) {
+        var dd = $('v-' + who + '-' + f), val = v[h][f];
+        dd.textContent = LABELS[f][val];
+        dd.classList.toggle('none', f === 1 && val === 0);
+        dd.classList.toggle('warn', f === 0 && val === 4);
+        dd.classList.remove('changed');
+        if (prevV && prevV[h][f] !== val && !reduce) { reflow(dd); dd.classList.add('changed'); }
+      });
+    });
+    var same = v.every(function (r) { return JSON.stringify(r) === JSON.stringify(v[0]); });
+    $('board-same').hidden = !same;
+    prevV = v;
+  }
+
+  /* phones: move a 520-wide camera to where the action is */
+  var svg0 = $('scene-svg'), FULL = [0, 0, 960, 430], camRaf = null, curVB = FULL.slice();
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 640px)') : { matches: false };
+  var CAMS = [0, 0, 40, 40, 440, 400, 220, 440, 440, 400, 400, 40, -1];
+  function camFor(i) {
+    var x = steps0[i].cam !== undefined ? steps0[i].cam : CAMS[i];
+    return x < 0 ? FULL : [x, 20, 520, 410];
+  }
+  function setVB(v) { curVB = v; svg0.setAttribute('viewBox', v.map(function (n) { return n.toFixed(1); }).join(' ')); }
+  function camera(i, animate) {
+    cancelAnimationFrame(camRaf);
+    var to = narrow.matches ? camFor(i) : FULL;
+    if (!animate || reduce) { setVB(to); return; }
+    var from = curVB.slice(), t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min((ts - t0) / 900, 1), e = ease(k);
+      setVB(from.map(function (a, n) { return a + (to[n] - a) * e; }));
+      if (k < 1) camRaf = requestAnimationFrame(frame);
+    }
+    camRaf = requestAnimationFrame(frame);
+  }
+
+  /* what each screen shows: local previews and the customer's phone */
+  var BTN = ['로그인', '로그인하기', '시작하기', '들어가기'];
+  function setPreview(who, val, flash) {
+    $('pv-' + who + '-btn').textContent = BTN[val[0]] || '';
+    $('pv-' + who + '-hint').textContent = val[1] ? '이메일을 입력하세요' : '';
+    $('pv-' + who + '-broken').classList.toggle('on', val[0] === 4);
+    if (flash) sfx('tick');
+    if (flash && !reduce) replay($('pv-' + who + '-frame'), 'flash');
+  }
+  function setPhone(val, flash) {
+    $('ph-btn').textContent = BTN[val[0]];
+    $('ph-hint').textContent = val[1] ? '이메일 입력' : '';
+    if (flash) sfx('chime');
+    if (flash && !reduce) replay($('ph-screen'), 'flash');
+  }
+  function same(a, b) { return a[0] === b[0] && a[1] === b[1]; }
+
+  var timers = [];
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function deploy(fromX, delay, val) {
+    var d = 'M' + fromX + ',118 C' + fromX + ',215 390,205 390,262';
+    $('sp-deploy').setAttribute('d', d);
+    $('tr-deploy').setAttribute('d', d);
+    later(function () {
+      show($('pkg'), true);
+      fly($('pkg'), 'deploy', [fromX, 118], [390, 262], 1000);
+      later(function () {
+        show($('pkg'), false);
+        $('leds').classList.add('busy');
+        $('signal').classList.add('on');
+        later(function () {
+          $('leds').classList.remove('busy');
+          $('signal').classList.remove('on');
+          setPhone(val, true);
+        }, 800);
+      }, 1050);
+    }, delay);
+  }
+
+  var BOXES = ['box-me', 'box-fly', 'box-tm1', 'box-tm2', 'box-fly2', 'box-me2', 'box-me3', 'box-tm3', 'box-fly3',
+               'box-fly4', 'box-left', 'box-me4', 'box-fly5', 'box-tm4', 'pr', 'pkg'];
+  var sayTimer = null, cur = 0;
+  function place(id, visible, pos, anim) {
+    var g = $(id);
+    show(g, visible);
+    moveTo(g, pos);
+    if (anim) anim(g);
+  }
+  function apply0(i, animate) {
+    var s = steps0[i], v = V[i], pv = V[Math.max(i - 1, 0)];
+    var prev = cur;
+    cur = i;
+    BOXES.forEach(function (id) { cancelAnimationFrame(rafs[id]); });
+    timers.forEach(clearTimeout); timers = [];
+    fig0.querySelectorAll('.trail').forEach(resetTrail);
+    show($('pkg'), false);
+    $('leds').classList.remove('busy');
+    $('signal').classList.remove('on');
+    var when = function (step, fn) { return animate && i === step ? fn : null; };
+
+    /* part 1-2: my a1b2c3d, then the first deploy */
+    place('box-me', i >= 1, P.desk, when(1, pop));
+    place('box-fly', i >= 2, i <= 4 ? P.branch : P.main1);
+    if (animate && i === 2) fly($('box-fly'), 'push', P.desk, P.branch, 1400);
+    if (animate && i === 5) fly($('box-fly'), 'merge', P.branch, P.main1, 1100);
+    place('box-tm1', i >= 7, P.tmDesk);
+    if (animate && i === 7) fly($('box-tm1'), 'pull', P.main1, P.tmDesk, 1500);
+
+    /* part 3-4: teammate's e5f6a7b */
+    place('box-tm2', i >= 8, P.tmTop, when(8, pop));
+    place('box-fly2', i >= 9, i <= 10 ? P.branch : P.main2);
+    if (animate && i === 9) fly($('box-fly2'), 'push2', P.tmTop, P.branch, 1400);
+    if (animate && i === 11) fly($('box-fly2'), 'merge2', P.branch, P.main2, 1100);
+    place('box-me2', i >= 12, P.deskTop);
+    if (animate && i === 12) fly($('box-me2'), 'pull2', P.main2, P.deskTop, 1500);
+
+    /* part 5: the conflict */
+    place('box-me3', i >= 13, P.desk3, when(13, pop));
+    place('box-tm3', i >= 13, P.tm3, when(13, pop));
+    place('box-fly3', i >= 14, P.main3);
+    if (animate && i === 14) fly($('box-fly3'), 'tmerge3', P.tm3, P.main3, 1500);
+    place('box-fly4', i >= 15 && i <= 17, P.branch);
+    if (animate && i === 15) fly($('box-fly4'), 'push3', P.desk3, P.branch, 1300);
+    place('box-left', i >= 16, P.deskLeft);
+    if (animate && i === 16) fly($('box-left'), 'pull3', P.main3, P.deskLeft, 1500);
+    place('box-me4', i >= 17, P.desk4, when(17, pop));
+    place('box-fly5', i >= 18, P.main4);
+    if (animate && i === 18) fly($('box-fly5'), 'push4', P.desk4, P.main4, 1600);
+    place('box-tm4', i >= 19, P.tm4);
+    if (animate && i === 19) fly($('box-tm4'), 'pull4', P.main4, P.tm4, 1400);
+    $('box-me3').classList.toggle('clash', i === 16);
+    $('box-left').classList.toggle('clash', i === 16);
+    show($('clash'), i === 15 || i === 16);
+
+    /* the PR card */
+    var card = $('pr');
+    show(card, (i >= 3 && i <= 7) || (i >= 10 && i <= 12) || i >= 14);
+    moveTo(card, P.prEnd);
+    card.classList.toggle('bad', i === 15 || i === 16);
+    $('pr-text').textContent =
+      i === 3 ? 'PR #12 · 리뷰 대기' : i === 4 ? 'PR #12 · 승인됨 ✓' : i <= 9 ? 'PR #12 · 머지 완료' :
+      i === 10 ? 'PR #13 · 리뷰 대기' : i <= 13 ? 'PR #13 · 머지 완료' : i === 14 ? 'PR #14 · 머지 완료' :
+      i <= 16 ? 'PR #15 · 충돌 ⚠' : i === 17 ? 'PR #15 · 해결 중' : 'PR #15 · 머지 완료';
+    if (animate && i === 3) fly(card, 'pr', P.prMe, P.prEnd, 1300);
+    if (animate && i === 10) fly(card, 'pr2', P.prTm, P.prEnd, 1100);
+    if (animate && i === 15) fly(card, 'pr', P.prMe, P.prEnd, 1300);
+    if (animate && [4, 5, 11, 14, 17, 18].indexOf(i) >= 0) pop(card);
+
+    var laneOn = (i >= 2 && i <= 4) || (i >= 9 && i <= 10) || (i >= 15 && i <= 17);
+    $('lane-branch').style.opacity = laneOn ? 1 : .45;
+    $('arm-me').classList.toggle('up', [2, 3, 11, 15].indexOf(i) >= 0);
+    $('arm-tm').classList.toggle('up', [5, 9, 10, 14, 18].indexOf(i) >= 0);
+    $('lap-me').classList.toggle('busy', [0, 11, 13, 16, 17].indexOf(i) >= 0);
+    $('lap-tm').classList.toggle('busy', [4, 8, 13].indexOf(i) >= 0);
+
+    [['head-tm', [4, 17]], ['head-me', [11, 17]]].forEach(function (h) {
+      var el = $(h[0]);
+      el.classList.remove('nod');
+      if (h[1].indexOf(i) >= 0 && !reduce) { reflow(el); el.classList.add('nod'); }
+    });
+
+    /* screens: local previews change right away (or once a pulled box lands); customers wait for a deploy */
+    var stepping = animate && !reduce && i === prev + 1;
+    [['me', 0], ['tm', 2]].forEach(function (p) {
+      var changed = !same(pv[p[1]], v[p[1]]);
+      if (stepping && changed && s.pvDelay) {
+        setPreview(p[0], pv[p[1]], false);
+        later(function () { setPreview(p[0], v[p[1]], true); }, s.pvDelay);
+      } else {
+        setPreview(p[0], v[p[1]], stepping && changed);
+      }
+    });
+    var DEPLOYS = { 6: [455, 200], 11: [510, 1300], 14: [565, 1700], 18: [620, 1800] };
+    if (stepping && DEPLOYS[i] && !same(pv[3], v[3])) {
+      setPhone(pv[3], false);
+      deploy(DEPLOYS[i][0], DEPLOYS[i][1], v[3]);
+    } else {
+      setPhone(v[3], false);
+    }
+
+    clearTimeout(sayTimer);
+    if (animate && s.sayDelay && !reduce) {
+      say('say-me', null); say('say-tm', null);
+      sayTimer = setTimeout(function () { say('say-me', s.me); say('say-tm', s.tm); }, s.sayDelay);
+    } else {
+      say('say-me', s.me);
+      say('say-tm', s.tm);
+    }
+    $('t-me').classList.toggle('here', s.here === 'me' || s.here === 'both');
+    $('t-tm').classList.toggle('here', s.here === 'tm' || s.here === 'both');
+    $('t-prod').classList.toggle('here', s.here === 'prod');
+    $('z-cloud').classList.toggle('here', s.here === 'cloud');
+
+    $('mdesc').textContent = s.d;
+    if (stepping) cue(i);
+
+    setBoard(i);
+    setScreen(s, animate);
+    camera(i, animate);
+  }
+  if (narrow.addEventListener) narrow.addEventListener('change', function () { camera(cur, false); });
+
+  /* phones: pick which panel shows under the pinned scene */
+  var TAB_KEY = 'gh-flow-tab';
+  function setTab(name) {
+    fig0.setAttribute('data-tab', name);
+    fig0.querySelectorAll('.mtabs button').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === name)); });
+    try { localStorage.setItem(TAB_KEY, name); } catch (e) {}
+  }
+  fig0.querySelectorAll('.mtabs button').forEach(function (b) { b.addEventListener('click', function () { setTab(b.dataset.tab); }); });
+  try { var saved = localStorage.getItem(TAB_KEY); if (saved === 'desc' || saved === 'board' || saved === 'screen') setTab(saved); } catch (e) {}
+
+
+  /* ---------- optional sound effects, synthesised; off until the viewer turns them on ---------- */
+  var actx = null, soundOn = false, SND_KEY = 'gh-flow-sound';
+  function env(t, peak, dur) {
+    var g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    g.connect(actx.destination);
+    return g;
+  }
+  function tone(freq, dur, type, peak, at, slideTo) {
+    var t = actx.currentTime + (at || 0), o = actx.createOscillator();
+    o.type = type || 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+    o.connect(env(t, peak || 0.07, dur));
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  function noise(dur, from, to, peak) {
+    var t = actx.currentTime, n = Math.floor(actx.sampleRate * dur);
+    var buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+    for (var k = 0; k < n; k++) d[k] = Math.random() * 2 - 1;
+    var src = actx.createBufferSource(), bp = actx.createBiquadFilter();
+    src.buffer = buf; bp.type = 'bandpass'; bp.Q.value = 1.4;
+    bp.frequency.setValueAtTime(from, t);
+    bp.frequency.exponentialRampToValueAtTime(to, t + dur);
+    var g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + dur * 0.45);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp); bp.connect(g); g.connect(actx.destination);
+    src.start(t); src.stop(t + dur + 0.02);
+  }
+  var SFX = {
+    pop:    function () { tone(520, 0.12, 'triangle', 0.09, 0, 900); },
+    whoosh: function (ms) { noise(Math.min((ms || 1200) / 1000, 1.4), 300, 2600, 0.05); },
+    land:   function () { tone(180, 0.12, 'sine', 0.08, 0, 120); },
+    tick:   function () { tone(1320, 0.06, 'sine', 0.04); },
+    chime:  function () { tone(1047, 0.35, 'sine', 0.06); tone(1568, 0.5, 'sine', 0.05, 0.12); },
+    buzz:   function () { tone(110, 0.18, 'square', 0.035); tone(104, 0.22, 'square', 0.035, 0.24); },
+    done:   function () { [784, 988, 1175, 1568].forEach(function (f, k) { tone(f, 0.3, 'triangle', 0.045, k * 0.09); }); }
+  };
+  function sfx(name, arg) {
+    if (!soundOn || !actx) return;
+    try { SFX[name](arg); } catch (e) {}
+  }
+  /* sounds tied to a whole step rather than to one moving thing */
+  function cue(i) {
+    if (i === 15) later(function () { sfx('buzz'); }, 1400);
+    if (i === 16) later(function () { sfx('buzz'); }, 1500);
+    var v = V[i];
+    if (v.every(function (r) { return r[0] === v[0][0] && r[1] === v[0][1]; })) later(function () { sfx('done'); }, i === 19 ? 1700 : 1800);
+  }
+  var sndBtn = $('snd');
+  function setSound(on) {
+    soundOn = on;
+    sndBtn.setAttribute('aria-pressed', String(on));
+    sndBtn.querySelector('span').textContent = on ? '소리 켜짐' : '소리 꺼짐';
+    try { localStorage.setItem(SND_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  sndBtn.addEventListener('click', function () {
+    if (!actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) { sndBtn.querySelector('span').textContent = '소리 지원 안 됨'; return; }
+      actx = new AC();
+    }
+    if (actx.state === 'suspended') actx.resume();
+    setSound(!soundOn);
+    if (soundOn) sfx('tick');
+  });
+
+  /* ---------- phones: swipe the scene to step ---------- */
+  var sx = null, sy = null;
+  var canvas0 = fig0.querySelector('.canvas');
+  canvas0.addEventListener('touchstart', function (e) { var t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+  canvas0.addEventListener('touchend', function (e) {
+    if (sx === null) return;
+    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    sx = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) { if (dx < 0) p0.next(); else p0.prev(); }
+  }, { passive: true });
+
+  var p0 = Player(fig0.querySelector('.player'), steps0, apply0, 3800);
+  if (narrow.matches) p0.go(0); else apply0(0, false);
+  autoStart(fig0, p0);
+})();
+</script>
+
+</body>
+</html>
