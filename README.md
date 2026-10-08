@@ -11,6 +11,22 @@
 | 저장소 | https://github.com/hongbuyong/github-for-beginners | 코드, 수정 기록, Issue, Pull Request |
 | Claude 아티팩트 | https://claude.ai/artifact/VEvkQRczyTqYMhbQUSmnJo | Claude에서 만든 원본 페이지예요. 내용은 같아요 |
 
+## 화면 미리보기
+
+**자동 배포 장면 (7 / 20단계).** main에 합쳐진 상자가 운영 서버로 배포되면 고객 휴대폰의 버튼이 "로그인하기"로 바뀌어요. 팀원 노트북은 아직 옛 버전이라는 점이 현황판에 함께 보여요.
+
+![자동 배포 장면: 나와 팀원의 노트북 화면, GitHub, 운영 서버와 고객 휴대폰, 버전 현황판, GitHub Actions 기록](docs/screenshots/desktop-deploy.png)
+
+**충돌 장면 (17 / 20단계).** 같은 줄을 서로 다르게 고친 상자 두 개가 빨갛게 표시돼요. 내 노트북 화면과 편집기에는 `<<<<<<<`, `=======`, `>>>>>>>` 충돌 표시가 나타나요.
+
+![충돌 장면: GitHub의 충돌 경고, 깨져 보이는 내 노트북 화면, 충돌 표시가 있는 편집기](docs/screenshots/desktop-conflict.png)
+
+<img src="docs/screenshots/mobile.png" alt="휴대폰 화면: 위에 고정된 장면과 부별 진행 막대, 아래의 설명·버전·화면 탭" width="300" align="right">
+
+**휴대폰 화면.** 장면과 재생 버튼이 화면 위에 고정되고, 지금 일이 일어나는 쪽으로 화면이 따라가요. 장면을 옆으로 밀어서 넘기고, 아래 탭에서 설명, 각자 가진 버전, 화면 속 내용을 골라 볼 수 있어요.
+
+<br clear="right">
+
 ## 무엇을 보여 주나요
 
 장면에는 네 곳이 나와요.
