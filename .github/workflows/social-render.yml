@@ -1,0 +1,39 @@
+name: 인스타 이미지 만들기
+
+on:
+  push:
+    branches: [main]
+    paths: ["social/**", ".github/workflows/social-render.yml"]
+  pull_request:
+    paths: ["social/**", ".github/workflows/social-render.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: social
+    steps:
+      # 태그는 나중에 다른 커밋을 가리키게 바뀔 수 있어서, 검증한 커밋 해시로 고정해요.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: social/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: npm run render
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: instagram
+          path: social/out/
+          retention-days: 30
