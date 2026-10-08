@@ -63,11 +63,13 @@
 
 평소처럼 커밋을 쌓아 올리는 푸시와 PR 머지는 그대로 할 수 있어요. 외부 기여자는 저장소를 fork한 뒤 Pull Request를 보내 주세요.
 
-`index.html` 안의 스크립트를 고치면 CSP 해시도 바꿔야 해요. 바꾸지 않으면 스크립트가 실행되지 않아요. 새 해시는 아래 명령으로 구할 수 있어요.
+`index.html` 안의 스크립트를 고치면 CSP 해시도 바꿔야 해요. 바꾸지 않으면 스크립트가 실행되지 않아요. 아래 명령으로 해시가 맞는지 확인할 수 있고, 맞지 않으면 새 해시를 알려 줘요.
 
 ```bash
-python -c "import re,hashlib,base64;s=open('index.html',encoding='utf-8').read();print(base64.b64encode(hashlib.sha256(re.search(r'<script>(.*?)</script>',s,re.S).group(1).encode()).digest()).decode())"
+python scripts/check_csp_hash.py
 ```
+
+Pull Request를 올리면 GitHub Actions가 같은 검사를 자동으로 돌려요. 해시가 맞지 않으면 PR에 실패 표시가 붙어요.
 
 ## 라이선스
 
