@@ -1,0 +1,11 @@
+/* 미리보기 화면 전용. 저장되는 이미지에는 영향이 없어요. */
+body.capture { margin: 0; width: var(--w); height: var(--h); overflow: hidden; }
+body.preview, body.gallery { margin: 0; background: #202630; color: #e6ebf0; font-family: "Pretendard", sans-serif; }
+body.gallery { padding: 40px; }
+.gallery a, .bar a { color: #9ad3ff; }
+.case-list { font-size: 18px; line-height: 2; }
+.bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 24px; align-items: center; padding: 14px 24px; background: #151a21; }
+.grid { --s: .3; display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; }
+.thumb { width: calc(var(--w) * var(--s)); height: calc(var(--h) * var(--s)); overflow: hidden; border-radius: 10px; box-shadow: 0 6px 24px #0006; }
+.thumb > .slide { transform: scale(var(--s)); transform-origin: 0 0; }
+.error { margin: 40px; padding: 20px; background: #43191c; color: #ff9b9b; white-space: pre-wrap; font-size: 16px; }

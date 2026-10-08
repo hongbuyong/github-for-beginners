@@ -1,0 +1,19 @@
+/* 폰트는 npm으로 받은 파일을 써요(SIL OFL 1.1). 기기마다 결과가 같도록 시스템 폰트에 기대지 않아요. */
+@font-face {
+  font-family: "Pretendard";
+  src: url("/node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2") format("woff2-variations");
+  font-weight: 45 920;
+  font-display: block;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-display: block;
+}

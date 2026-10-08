@@ -1,0 +1,15 @@
+{
+  "brand": "깃허브 작업 흐름",
+  "handle": "",
+  "site": "hongbuyong.github.io/github-for-beginners",
+  "formats": {
+    "post": { "width": 1080, "height": 1350 },
+    "reel": { "width": 1080, "height": 1920 }
+  },
+  "reel": {
+    "secondsPerSlide": 3.5,
+    "lastSlideSeconds": 4.5,
+    "transitionSeconds": 0.4,
+    "fps": 30
+  }
+}
