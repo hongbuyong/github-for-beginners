@@ -1,0 +1,67 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "cloud",
+  "caption": "main에서 바로 고치면 안 되나요? 🤔\n\nmain은 팀 전체가 함께 쓰는 원본이에요. 여기서 실수하면 모두의 화면이 함께 깨져요.\n\n그래서 원본을 복사한 작업 갈래, 브랜치를 만들어요. 브랜치에서 마음껏 고치고, PR로 리뷰를 받은 뒤 main에 합쳐요.\n\n브랜치 → PR → 머지로 이어지는 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "브랜치", "개발입문", "코딩공부", "비전공개발자", "협업"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #4",
+      "title": "브랜치는\n**왜** 만들까?",
+      "subtitle": "원본을 지키는 나만의 작업 갈래",
+      "cast": { "who": "duo", "mood": "happy" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "tm", "mood": "confused", "text": "main에서 바로 고치면\n안 돼요?" },
+        { "who": "me", "mood": "surprised", "text": "제가 실수하면\n**모두의 화면**이 깨져요!" },
+        { "who": "tm", "mood": "happy", "text": "그래서 **브랜치**를\n만드는 거군요!" }
+      ]
+    },
+    {
+      "type": "concept",
+      "accent": "main",
+      "label": "main",
+      "title": "모두가 함께 쓰는\n**원본**",
+      "body": "팀 전체가 함께 쓰는 기준이에요. 여기를 바로 고치면 실수가 **모두에게** 퍼져요.",
+      "cast": { "who": "me", "mood": "confused", "pose": "laptop", "say": "여긴 조심조심…" }
+    },
+    {
+      "type": "concept",
+      "label": "브랜치 · branch",
+      "title": "원본을 복사한\n**내 작업 갈래**",
+      "body": "원본은 그대로 두고 복사본 위에서 마음껏 고쳐요. 망쳐도 **원본은 안전**해요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "wave", "say": "실험해도 괜찮아요!" }
+    },
+    {
+      "type": "terminal",
+      "title": "브랜치는 이렇게 만들어요",
+      "lines": [
+        { "cmd": "git switch -c feature/login" },
+        { "out": "Switched to a new branch 'feature/login'" },
+        { "cmd": "git branch" },
+        { "out": "  main" },
+        { "code": "* feature/login" }
+      ],
+      "note": "`*` 표시가 붙은 곳이 **지금 내가 있는** 브랜치예요."
+    },
+    {
+      "type": "steps",
+      "title": "브랜치로 일하는 순서",
+      "items": [
+        { "name": "브랜치 만들기", "desc": "원본을 복사한 갈래를 만들어요" },
+        { "name": "커밋하고 푸시", "desc": "갈래 위에 작업을 쌓아 올려요" },
+        { "name": "PR 열기", "desc": "원본에 합쳐 달라고 요청해요" },
+        { "name": "머지", "desc": "리뷰를 통과하면 main에 합쳐요" }
+      ]
+    },
+    {
+      "type": "end",
+      "title": "원본은 지키고,\n작업은 **브랜치**에서",
+      "body": "브랜치에서 PR, 머지까지 이어지는 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "laptop", "say": "안심하고 작업!" }
+    }
+  ]
+}
