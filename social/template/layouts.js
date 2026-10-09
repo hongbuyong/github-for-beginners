@@ -104,13 +104,14 @@ export const LAYOUTS = {
       </ol>`,
   },
 
-  // 터미널 화면. cmd는 입력한 명령, out은 출력
+  // 터미널 화면. cmd는 입력한 명령, out은 출력, code는 파일 내용처럼 밝게 보이는 줄
   terminal: {
     fields: {
       title: { kind: 'text', max: 30 },
       lines: { kind: 'list', required: true, min: 1, max: 8, item: { kind: 'object', fields: {
         cmd: { kind: 'text', max: 44 },
         out: { kind: 'text', max: 44 },
+        code: { kind: 'text', max: 44 },
       } } },
       note: { kind: 'text', max: 80 },
     },
@@ -118,9 +119,11 @@ export const LAYOUTS = {
       ${opt('h2', 'title', s.title)}
       <div class="terminal">
         <div class="term-bar"><i></i><i></i><i></i></div>
-        <pre>${s.lines.map((l) => (l.cmd
-          ? `<span class="cmd"><span class="prompt">$</span> ${esc(l.cmd)}</span>`
-          : `<span class="out">${esc(l.out || '')}</span>`)).join('\n')}</pre>
+        <pre>${s.lines.map((l) => {
+          if (l.cmd) return `<span class="cmd"><span class="prompt">$</span> ${esc(l.cmd)}</span>`;
+          if (l.code) return `<span class="cmd">${esc(l.code)}</span>`;
+          return `<span class="out">${esc(l.out || '')}</span>`;
+        }).join('\n')}</pre>
       </div>
       ${opt('p', 'note', s.note)}`,
   },

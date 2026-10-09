@@ -1,0 +1,64 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "hot",
+  "caption": "PR을 합치려는데 머지 버튼이 잠겼어요. 😱\n\n나와 팀원이 같은 줄을 동시에 고치면 Git은 어느 쪽이 맞는지 몰라서 멈추고 사람에게 물어봐요. 이게 바로 충돌(conflict)이에요.\n\n고장이 아니라 안전장치예요. 남길 내용을 고르고 커밋하면 다시 합칠 수 있어요.\n\n같은 줄을 동시에 고치는 장면은 프로필 링크의 애니메이션 마지막 부분에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "머지충돌", "개발입문", "코딩공부", "비전공개발자", "협업"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #3",
+      "title": "같은 줄을 둘이 고치면\n**어떻게 돼요?**",
+      "subtitle": "충돌(conflict), 무서워하지 마세요",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "PR을 합치려는데\n**머지 버튼**이 잠겼어요!" },
+        { "who": "tm", "mood": "confused", "text": "아, 저도 **같은 줄**을\n고쳤거든요" },
+        { "who": "me", "mood": "happy", "text": "그럼 뭘 남길지\n같이 골라 봐요!" }
+      ]
+    },
+    {
+      "type": "concept",
+      "label": "충돌 · conflict",
+      "title": "Git이 **골라 달라고**\n멈춘 것",
+      "body": "서로 다른 곳을 고치면 Git이 알아서 합쳐요. 하지만 **같은 줄**을 둘 다 고치면 어느 쪽이 맞는지 몰라서 사람에게 물어봐요.",
+      "cast": { "who": "tm", "mood": "confused", "say": "어느 쪽이 맞지?" }
+    },
+    {
+      "type": "terminal",
+      "title": "파일 안에는 이렇게 보여요",
+      "lines": [
+        { "out": "<<<<<<< main" },
+        { "code": "<button>로그인</button>" },
+        { "out": "=======" },
+        { "code": "<button>시작하기</button>" },
+        { "out": ">>>>>>> feature/start-button" }
+      ],
+      "note": "`=======` 위는 main, 아래는 내 브랜치 내용이에요. **남길 것만** 두고 표시 줄은 지워요."
+    },
+    {
+      "type": "steps",
+      "title": "충돌 푸는 순서",
+      "items": [
+        { "name": "최신 main 받기", "desc": "`git pull origin main`" },
+        { "name": "표시된 곳 찾기", "desc": "`<<<<<<<`로 시작하는 부분이에요" },
+        { "name": "남길 내용 고르기", "desc": "한쪽만, 또는 둘 다 살릴 수도 있어요" },
+        { "name": "커밋하고 푸시", "desc": "그러면 머지 버튼이 다시 열려요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "충돌이 나면 내가\n뭔가 망가뜨린 거다",
+      "truth": "아니에요. 함께 일하면 **자연스럽게** 생겨요. Git이 멋대로 정하지 않고 사람에게 묻는 **안전장치**예요."
+    },
+    {
+      "type": "end",
+      "title": "충돌은 고장이 아니라\n**질문**이에요",
+      "body": "같은 줄을 동시에 고치는 장면은 애니메이션 마지막 부분에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "이제 안 무서워요!" }
+    }
+  ]
+}
