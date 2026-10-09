@@ -1,0 +1,76 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "mate",
+  "caption": "방금 머지한 코드 때문에 버튼이 사라졌다면? 😱\n\n괜찮아요. 잘못된 커밋을 몰래 지우는 대신, 그 변경을 거꾸로 되돌리는 커밋을 하나 더 만들면 돼요. 이게 git revert예요.\n\n오타 난 책을 몰래 없애지 않고 바로잡은 정정판을 새로 내는 것처럼, 기록은 그대로 남기고 바로잡아요.\n\n커밋이 쌓이고 합쳐지는 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitrevert", "개발입문", "코딩공부", "비전공개발자", "협업"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #10",
+      "title": "잘못 올렸어요!\n**되돌릴** 수 있나요?",
+      "subtitle": "기록은 남기고 바로잡는 git revert",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "방금 머지한 거,\n**버튼이 사라졌어요**!" },
+        { "who": "tm", "mood": "happy", "text": "괜찮아요, **되돌리기**\n커밋을 하나 더 만들면 돼요" },
+        { "who": "me", "mood": "happy", "text": "지우는 게 아니라\n**더하는** 거군요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "잘못 낸 책엔 정정판을",
+      "pairs": [
+        { "life": "오타 난 개정판이 나감", "git": "잘못된 커밋" },
+        { "life": "바로잡은 정정판 새로 내기", "git": "git revert" },
+        { "life": "예전 판은 기록으로 보관", "git": "기록 유지" }
+      ],
+      "note": "책을 몰래 없애지 않고 **바로잡은 판**을 내요."
+    },
+    {
+      "type": "concept",
+      "label": "되돌리기 · git revert",
+      "title": "거꾸로 고친 커밋을\n**하나 더**",
+      "body": "잘못된 커밋을 지우지 않고, 그 변경을 **거꾸로 되돌리는** 새 커밋을 만들어요. 기록은 그대로 남아요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "기록은 그대로!" }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 되돌려요",
+      "lines": [
+        { "cmd": "git log --oneline" },
+        { "code": "9d4e1f2 로그인 버튼 지우기" },
+        { "out": "7c1d2e0 로그인 버튼 글자 키우기" },
+        { "cmd": "git revert 9d4e1f2" },
+        { "out": "[fix/undo 5a6b7c8] Revert \"로그인 버튼 지우기\"" }
+      ],
+      "note": "되돌린 것도 **새 커밋**으로 남아서, 언제 바로잡았는지 보여요."
+    },
+    {
+      "type": "steps",
+      "title": "실수했을 때 순서",
+      "items": [
+        { "name": "문제 커밋 찾기", "desc": "git log로 언제 바뀌었는지 봐요" },
+        { "name": "되돌리기 커밋 만들기", "desc": "git revert로 거꾸로 고쳐요" },
+        { "name": "PR로 확인받기", "desc": "되돌린 것도 리뷰를 받아요" },
+        { "name": "머지하고 배포", "desc": "고객 화면이 원래대로 돌아와요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "실수한 커밋은\n몰래 지워야 한다",
+      "truth": "아니에요. 기록을 지우면 팀원의 기록과 **어긋나요**. 이 저장소의 main도 **강제 푸시를 막아** 두었어요."
+    },
+    {
+      "type": "end",
+      "title": "실수는 지우지 말고\n**바로잡아요**",
+      "body": "커밋이 쌓이고 합쳐지는 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "되돌리기 완료!" }
+    }
+  ]
+}
