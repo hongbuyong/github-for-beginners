@@ -1,0 +1,76 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "hot",
+  "caption": "팀원이 어제 고친 내용을 모르고, 옛날 화면 위에서 작업하고 있었다면? 😱\n\n풀(pull)은 GitHub에 올라온 최신 내용을 내 노트북으로 받아오는 거예요. 푸시와 반대 방향이에요.\n\n작업을 시작하기 전에 풀부터 받아 두면, 나중에 합칠 때 충돌이 훨씬 줄어요. 도서관에서 최신 개정판을 꺼내 와서 메모하는 것처럼요.\n\n내 노트북과 GitHub 사이를 파일이 오가는 모습은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitpull", "개발입문", "코딩공부", "비전공개발자", "협업"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #8",
+      "title": "풀(pull)은\n**언제** 받아야 해요?",
+      "subtitle": "작업 시작 전, 최신 내용부터",
+      "cast": { "who": "duo", "mood": "happy" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "tm", "mood": "happy", "text": "어제 로그인 화면\n**고쳐서 올렸어요**!" },
+        { "who": "me", "mood": "surprised", "text": "어? 저는 옛날 화면에서\n작업하고 있었는데…" },
+        { "who": "tm", "mood": "happy", "text": "작업 전에 **풀** 먼저\n받으면 돼요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "메모 전에 최신판 확인",
+      "pairs": [
+        { "life": "서가에서 최신 개정판 꺼내기", "git": "git pull" },
+        { "life": "모르고 옛날 판에 메모하기", "git": "오래된 코드" },
+        { "life": "반납할 때 내용이 안 맞음", "git": "충돌" }
+      ],
+      "note": "**시작 전에** 최신판부터 꺼내 오면 편해요."
+    },
+    {
+      "type": "concept",
+      "label": "풀 · git pull",
+      "title": "최신 내용을\n**내 노트북으로**",
+      "body": "다른 사람이 GitHub에 올린 변경을 내 작업 폴더로 받아와요. 푸시와 **반대 방향**이에요.",
+      "cast": { "who": "me", "mood": "happy", "pose": "laptop", "say": "최신으로 받기!" }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 받아요",
+      "lines": [
+        { "cmd": "git switch main" },
+        { "cmd": "git pull" },
+        { "out": "Updating 3f2a1c9..8b37789" },
+        { "out": "Fast-forward" },
+        { "out": " login.html | 2 +-" }
+      ],
+      "note": "최신 main을 받은 다음 **새 브랜치**를 만들어 작업을 시작해요."
+    },
+    {
+      "type": "steps",
+      "title": "하루 작업 순서",
+      "items": [
+        { "name": "풀 받기", "desc": "최신 main으로 맞춰요" },
+        { "name": "브랜치 만들기", "desc": "내 작업 갈래를 만들어요" },
+        { "name": "커밋하고 푸시", "desc": "작업을 쌓아 올려요" },
+        { "name": "PR 열기", "desc": "리뷰를 받고 main에 합쳐요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "풀은 가끔만\n받아도 된다",
+      "truth": "오래 안 받으면 내 작업이 **옛날 버전** 위에 쌓여요. 나중에 합칠 때 충돌이 커지니 **시작 전에** 받아요."
+    },
+    {
+      "type": "end",
+      "title": "작업 전에 풀,\n**최신부터** 시작해요",
+      "body": "내 노트북과 GitHub 사이를 파일이 오가는 모습은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "tm", "mood": "proud", "pose": "wave", "say": "풀 먼저!" }
+    }
+  ]
+}
