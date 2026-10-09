@@ -2,22 +2,68 @@
   "series": "헷갈리는 깃 용어",
   "accent": "mate",
   "caption": "Git을 설치했는데 GitHub 가입은 왜 또 해야 할까요? 🤔\n\nGit은 내 컴퓨터에서 파일이 바뀐 기록을 남기는 프로그램이고, GitHub는 그 기록을 올려 두고 팀과 함께 보는 웹사이트예요.\n\nGit은 기록하고, GitHub는 나눠요.\n\n내 노트북과 GitHub 사이를 파일이 오가는 모습은 프로필 링크의 애니메이션에서 볼 수 있어요.",
-  "hashtags": ["깃허브", "깃", "github", "git", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "hashtags": [
+    "깃허브",
+    "깃",
+    "github",
+    "git",
+    "개발입문",
+    "코딩공부",
+    "비전공개발자",
+    "개발용어"
+  ],
   "slides": [
     {
       "type": "cover",
       "kicker": "헷갈리는 깃 용어 #5",
       "title": "Git과 GitHub,\n**같은 거** 아니에요?",
       "subtitle": "이름은 비슷해도 하는 일이 달라요",
-      "cast": { "who": "duo", "mood": "confused" }
+      "cast": {
+        "who": "duo",
+        "mood": "confused"
+      }
     },
     {
       "type": "talk",
       "lines": [
-        { "who": "tm", "mood": "confused", "text": "Git 깔았는데 왜\nGitHub 가입을 또 해요?" },
-        { "who": "me", "mood": "happy", "text": "둘은 **다른 거**예요!" },
-        { "who": "tm", "mood": "surprised", "text": "엥? 이름이\n거의 같은데요?" }
+        {
+          "who": "tm",
+          "mood": "confused",
+          "text": "Git 깔았는데 왜\nGitHub 가입을 또 해요?"
+        },
+        {
+          "who": "me",
+          "mood": "happy",
+          "text": "둘은 **다른 거**예요!"
+        },
+        {
+          "who": "tm",
+          "mood": "surprised",
+          "text": "엥? 이름이\n거의 같은데요?"
+        }
       ]
+    },
+    {
+      "type": "analogy",
+      "scene": "photo",
+      "label": "사진으로 비유하면",
+      "title": "카메라 앱과 공유 앨범",
+      "pairs": [
+        {
+          "life": "휴대폰 카메라 앱",
+          "git": "Git"
+        },
+        {
+          "life": "가족 공유 앨범",
+          "git": "GitHub"
+        }
+      ],
+      "note": "카메라는 혼자서도 찍혀요. 앨범은 **함께 봐요**.",
+      "cast": {
+        "who": "me",
+        "mood": "proud",
+        "say": "이제 알겠어요!"
+      }
     },
     {
       "type": "concept",
@@ -25,7 +71,12 @@
       "label": "Git",
       "title": "내 컴퓨터의\n**기록 프로그램**",
       "body": "파일이 어떻게 바뀌었는지 차곡차곡 기록해요. 인터넷이 없어도 **내 노트북에서** 돌아가요.",
-      "cast": { "who": "me", "mood": "proud", "pose": "laptop", "say": "기록은 여기서!" }
+      "cast": {
+        "who": "me",
+        "mood": "proud",
+        "pose": "laptop",
+        "say": "기록은 여기서!"
+      }
     },
     {
       "type": "concept",
@@ -33,13 +84,32 @@
       "label": "GitHub",
       "title": "기록을 올려 두는\n**웹사이트**",
       "body": "Git으로 만든 기록을 올려 두고 **팀과 함께** 봐요. PR, 리뷰, 자동 배포도 여기서 해요.",
-      "cast": { "who": "tm", "mood": "happy", "pose": "wave", "say": "같이 보는 곳!" }
+      "cast": {
+        "who": "tm",
+        "mood": "happy",
+        "pose": "wave",
+        "say": "같이 보는 곳!"
+      }
     },
     {
       "type": "compare",
       "title": "한눈에 비교",
-      "left": { "label": "Git", "points": ["내 컴퓨터에 설치", "바뀐 기록을 남겨요", "혼자서도 써요"] },
-      "right": { "label": "GitHub", "points": ["웹사이트", "기록을 보관하고 공유", "팀과 함께 써요"] },
+      "left": {
+        "label": "Git",
+        "points": [
+          "내 컴퓨터에 설치",
+          "바뀐 기록을 남겨요",
+          "혼자서도 써요"
+        ]
+      },
+      "right": {
+        "label": "GitHub",
+        "points": [
+          "웹사이트",
+          "기록을 보관하고 공유",
+          "팀과 함께 써요"
+        ]
+      },
       "verdict": "Git은 **도구**, GitHub는 **모이는 곳**"
     },
     {
@@ -52,7 +122,12 @@
       "title": "Git은 기록하고,\nGitHub는 **나눠요**",
       "body": "내 노트북과 GitHub 사이를 파일이 오가는 모습은 애니메이션에서 볼 수 있어요.",
       "cta": "전체 흐름 보러 가기",
-      "cast": { "who": "me", "mood": "happy", "pose": "wave", "say": "이제 구분 완료!" }
+      "cast": {
+        "who": "me",
+        "mood": "happy",
+        "pose": "wave",
+        "say": "이제 구분 완료!"
+      }
     }
   ]
 }

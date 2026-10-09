@@ -2,37 +2,98 @@
   "series": "헷갈리는 깃 용어",
   "accent": "feature",
   "caption": "PR을 열었더니 팀원이 코멘트를 달았어요. 혹시 혼나는 걸까요? 😳\n\n아니에요. 리뷰는 합치기 전에 바뀐 코드를 함께 한 번 더 보는 시간이에요. 혼자서는 못 본 실수를 머지 전에 잡아 주는 팀의 안전망이에요.\n\n코멘트를 반영해서 같은 PR에 다시 커밋하고, 승인을 받으면 main에 합쳐요.\n\nPR에서 리뷰를 받고 머지하는 장면은 프로필 링크의 애니메이션에서 볼 수 있어요.",
-  "hashtags": ["깃허브", "깃", "github", "코드리뷰", "PR", "개발입문", "코딩공부", "비전공개발자", "협업"],
+  "hashtags": [
+    "깃허브",
+    "깃",
+    "github",
+    "코드리뷰",
+    "PR",
+    "개발입문",
+    "코딩공부",
+    "비전공개발자",
+    "협업"
+  ],
   "slides": [
     {
       "type": "cover",
       "kicker": "헷갈리는 깃 용어 #6",
       "title": "PR 리뷰,\n**뭘 보는** 걸까?",
       "subtitle": "합치기 전에 함께 확인하는 시간",
-      "cast": { "who": "duo", "mood": "happy" }
+      "cast": {
+        "who": "duo",
+        "mood": "happy"
+      }
     },
     {
       "type": "talk",
       "lines": [
-        { "who": "me", "mood": "confused", "text": "PR 열었는데 팀원이\n**코멘트**를 달았어요" },
-        { "who": "tm", "mood": "happy", "text": "버튼 이름을 '로그인하기'로\n바꿔 볼까요?" },
-        { "who": "me", "mood": "proud", "text": "고쳐서 **다시 커밋**할게요!" }
+        {
+          "who": "me",
+          "mood": "confused",
+          "text": "PR 열었는데 팀원이\n**코멘트**를 달았어요"
+        },
+        {
+          "who": "tm",
+          "mood": "happy",
+          "text": "버튼 이름을 '로그인하기'로\n바꿔 볼까요?"
+        },
+        {
+          "who": "me",
+          "mood": "proud",
+          "text": "고쳐서 **다시 커밋**할게요!"
+        }
       ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "신메뉴를 내기 전에",
+      "pairs": [
+        {
+          "life": "신메뉴 레시피 만들기",
+          "git": "PR 열기"
+        },
+        {
+          "life": "사장님이 맛보고 한마디",
+          "git": "리뷰"
+        },
+        {
+          "life": "간을 고쳐서 다시 내기",
+          "git": "다시 커밋"
+        },
+        {
+          "life": "메뉴판에 정식으로 올리기",
+          "git": "머지"
+        }
+      ],
+      "note": "맛보기는 혼내는 게 아니라 **손님을 위한** 거예요."
     },
     {
       "type": "concept",
       "label": "리뷰 · review",
       "title": "합치기 전에\n**한 번 더** 보는 눈",
       "body": "PR에 올라온 바뀐 코드를 팀원이 읽고 의견을 남겨요. 혼자서는 못 본 실수를 **머지 전에** 잡아요.",
-      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "여기 바꿔 볼까요?" }
+      "cast": {
+        "who": "tm",
+        "mood": "happy",
+        "pose": "point",
+        "say": "여기 바꿔 볼까요?"
+      }
     },
     {
       "type": "terminal",
       "title": "리뷰어는 이렇게 봐요",
       "lines": [
-        { "out": "login.html" },
-        { "out": "- <button>로그인</button>" },
-        { "code": "+ <button>로그인하기</button>" }
+        {
+          "out": "login.html"
+        },
+        {
+          "out": "- <button>로그인</button>"
+        },
+        {
+          "code": "+ <button>로그인하기</button>"
+        }
       ],
       "note": "`-`는 지운 줄, `+`는 새로 더한 줄이에요. 리뷰어는 이 **차이(diff)**를 읽어요."
     },
@@ -40,10 +101,22 @@
       "type": "steps",
       "title": "리뷰가 오가는 순서",
       "items": [
-        { "name": "PR 열기", "desc": "바뀐 줄이 한눈에 정리돼요" },
-        { "name": "코멘트 받기", "desc": "고칠 점이나 질문이 달려요" },
-        { "name": "고쳐서 다시 푸시", "desc": "같은 PR에 커밋이 더해져요" },
-        { "name": "승인 후 머지", "desc": "Approve를 받으면 main에 합쳐요" }
+        {
+          "name": "PR 열기",
+          "desc": "바뀐 줄이 한눈에 정리돼요"
+        },
+        {
+          "name": "코멘트 받기",
+          "desc": "고칠 점이나 질문이 달려요"
+        },
+        {
+          "name": "고쳐서 다시 푸시",
+          "desc": "같은 PR에 커밋이 더해져요"
+        },
+        {
+          "name": "승인 후 머지",
+          "desc": "Approve를 받으면 main에 합쳐요"
+        }
       ]
     },
     {
@@ -56,7 +129,12 @@
       "title": "리뷰는 지적이 아니라\n**함께 확인**이에요",
       "body": "PR에서 리뷰를 받고 머지하는 장면은 애니메이션에서 볼 수 있어요.",
       "cta": "전체 흐름 보러 가기",
-      "cast": { "who": "me", "mood": "happy", "pose": "wave", "say": "리뷰 환영해요!" }
+      "cast": {
+        "who": "me",
+        "mood": "happy",
+        "pose": "wave",
+        "say": "리뷰 환영해요!"
+      }
     }
   ]
 }

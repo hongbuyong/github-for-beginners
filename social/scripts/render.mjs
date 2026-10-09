@@ -67,7 +67,15 @@ try {
           const err = document.querySelector('.error');
           if (err) return err.textContent;
           const c = document.querySelector('.content');
-          return c && c.scrollHeight > c.clientHeight + 1 ? '글이 너무 길어서 화면 밖으로 넘쳐요. 내용을 줄여 주세요' : null;
+          const overflows = () => c && c.scrollHeight > c.clientHeight + 1;
+          if (overflows()) return '글이 너무 길어서 화면 밖으로 넘쳐요. 내용을 줄여 주세요';
+          // 컴퓨터마다 글자 폭이 조금씩 달라요. 폭을 30px 좁혀도 넘치지 않아야 어디서 만들어도 같은 결과가 나와요.
+          const squeeze = document.createElement('style');
+          squeeze.textContent = '.slide { padding-right: calc(var(--pad-right) + 30px) !important; }';
+          document.head.append(squeeze);
+          const tight = overflows();
+          squeeze.remove();
+          return tight ? '여유가 거의 없어서 다른 컴퓨터에서는 넘칠 수 있어요. 문장을 조금 줄여 주세요' : null;
         });
         if (problem) throw new Error(`cases/${id}.json ${i}번째 장(${format}): ${problem}`);
         const file = join(dir, `${String(i).padStart(2, '0')}.png`);
