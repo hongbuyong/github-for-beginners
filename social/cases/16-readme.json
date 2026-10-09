@@ -1,0 +1,142 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "feature",
+  "caption": "처음 보는 저장소에 들어갔는데, 어디부터 봐야 할지 막막하셨죠? 🤔\n\nREADME는 저장소의 첫 페이지예요. GitHub에서 저장소를 열면 가장 먼저 보이는 안내문으로, 무엇을 하는 저장소인지, 어떻게 쓰는지, 어떻게 함께 고칠 수 있는지 적혀 있어요.\n\n식당 앞 메뉴판과 안내판처럼, 처음 온 사람이 들어올지 말지를 여기서 정해요.\n\n이 시리즈를 만든 저장소의 README도 누구나 읽기 쉽게 썼어요. 프로필 링크에서 확인해 보세요.",
+  "hashtags": [
+    "깃허브",
+    "github",
+    "README",
+    "문서화",
+    "개발입문",
+    "코딩공부",
+    "비전공개발자",
+    "오픈소스",
+    "개발용어"
+  ],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #16",
+      "title": "README는\n**뭐예요?**",
+      "subtitle": "저장소의 첫인상, 안내문",
+      "cast": {
+        "who": "duo",
+        "mood": "confused"
+      }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        {
+          "who": "me",
+          "mood": "confused",
+          "text": "처음 보는 저장소인데\n어디부터 봐야 해요?"
+        },
+        {
+          "who": "tm",
+          "mood": "happy",
+          "text": "**README**부터 읽어 보세요!"
+        },
+        {
+          "who": "me",
+          "mood": "happy",
+          "text": "사용법이 **다 적혀** 있네요!"
+        }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "가게 앞 안내판",
+      "pairs": [
+        {
+          "life": "가게 앞 메뉴판과 안내문",
+          "git": "README"
+        },
+        {
+          "life": "영업시간과 찾아오는 길",
+          "git": "사용법"
+        },
+        {
+          "life": "단체 예약 문의처",
+          "git": "기여 방법"
+        }
+      ],
+      "note": "안내판이 없으면 손님이 **들어오기 전에** 돌아가요."
+    },
+    {
+      "type": "concept",
+      "label": "README.md",
+      "title": "저장소의\n**첫 페이지**",
+      "body": "GitHub에서 저장소를 열면 가장 먼저 보이는 글이에요. 무엇을 하는 저장소인지, **어떻게 쓰는지** 적어요.",
+      "cast": {
+        "who": "tm",
+        "mood": "happy",
+        "pose": "point",
+        "say": "여기부터 읽기!"
+      }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 생겼어요",
+      "lines": [
+        {
+          "code": "# GitHub for Beginners"
+        },
+        {
+          "out": "커밋부터 배포까지 보여 주는"
+        },
+        {
+          "out": "한국어 입문 자료예요."
+        },
+        {
+          "code": "## 사용법"
+        },
+        {
+          "out": "index.html을 브라우저로 열면 돼요."
+        }
+      ],
+      "note": "`#`은 제목, `##`은 작은 제목이에요. 이 시리즈 저장소의 README를 **줄인 모습**이에요."
+    },
+    {
+      "type": "steps",
+      "title": "README에 쓰는 것",
+      "items": [
+        {
+          "name": "무엇인지",
+          "desc": "한두 줄로 소개해요"
+        },
+        {
+          "name": "어떻게 쓰는지",
+          "desc": "설치하고 실행하는 방법"
+        },
+        {
+          "name": "함께 고치는 법",
+          "desc": "이슈와 PR 안내"
+        },
+        {
+          "name": "라이선스",
+          "desc": "누가 어떻게 써도 되는지"
+        }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "README는 개발자만\n읽는 글이다",
+      "truth": "아니에요. 처음 온 **누구나** 읽어요. 비개발자도 알아들을 수 있게 **쉽게** 쓰는 게 좋아요."
+    },
+    {
+      "type": "end",
+      "title": "README는\n저장소의 **첫인상**",
+      "body": "이 시리즈 저장소의 README도 쉽게 썼어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": {
+        "who": "me",
+        "mood": "proud",
+        "pose": "wave",
+        "say": "README 먼저!"
+      }
+    }
+  ]
+}
