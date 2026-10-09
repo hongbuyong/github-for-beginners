@@ -74,6 +74,7 @@ npm run render -- --no-video            # 영상 빼고 이미지만
 | `steps` | 순서가 있는 과정 | `title`, **`items`**: **`name`**, `desc` (2~5개) |
 | `terminal` | 실제 명령어 화면 | `title`, **`lines`**: `cmd`(입력한 명령), `out`(출력), `code`(파일 내용) 중 하나, `note` |
 | `myth` | 흔한 오해와 사실 | **`myth`**, **`truth`** |
+| `analogy` | 일상 장면에 빗대기. 어려운 설명 앞에 두면 좋아요 | **`scene`**(`restaurant` 식당 · `library` 도서관 · `photo` 사진), **`label`**, `title`, **`pairs`**: **`life`**(일상), **`git`**(깃 용어) (2~4개), `note` |
 | `end` | 마지막 장. 정리와 안내(사이트 주소는 자동) | **`title`**, `body`, `cta` |
 
 굵게 표시한 칸은 꼭 있어야 해요. 모든 장에는 `accent`, `seconds`(릴스에서 이 장을 보여 줄 초), `cast`(캐릭터)를 더 쓸 수 있어요.

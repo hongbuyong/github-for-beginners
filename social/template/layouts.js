@@ -22,6 +22,14 @@ export const COMMON_FIELDS = {
 
 const WHO_NAME = { me: '나', tm: '팀원' };
 
+// 비유 장의 장면 아이콘(선으로 그린 48×48)
+const SCENES = {
+  restaurant: '<path d="M15 6v13a5 5 0 0 0 10 0V6M20 6v36M34 6c-5 4-6 13-6 19h6v17"/>',
+  library: '<path d="M6 11c6-3 12-3 18 1 6-4 12-4 18-1v27c-6-3-12-3-18 1-6-4-12-4-18-1z"/><path d="M24 12v27"/>',
+  photo: '<rect x="5" y="14" width="38" height="25" rx="5"/><circle cx="24" cy="26.5" r="7"/><path d="M16 14l3-5h10l3 5"/>',
+};
+const sceneIcon = (k) => `<svg class="scene-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SCENES[k]}</svg>`;
+
 const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -157,6 +165,27 @@ export const LAYOUTS = {
           <div class="said"><span class="who-name">${WHO_NAME[l.who]}</span><p class="bubble">${rich(l.text)}</p></div>
         </div>`).join('')}
       </div>`,
+  },
+
+  // 일상 장면에 빗대어 설명하는 장. 왼쪽은 일상, 오른쪽은 깃 용어
+  analogy: {
+    fields: {
+      scene: { kind: 'enum', required: true, values: Object.keys(SCENES) },
+      label: { kind: 'text', required: true, max: 20 },
+      title: { kind: 'text', max: 30 },
+      pairs: { kind: 'list', required: true, min: 2, max: 4, item: { kind: 'object', fields: {
+        life: { kind: 'text', required: true, max: 26 },
+        git: { kind: 'text', required: true, max: 12 },
+      } } },
+      note: { kind: 'text', max: 60 },
+    },
+    render: (s) => `
+      <div class="analogy-head">${sceneIcon(s.scene)}<p class="label">${rich(s.label)}</p></div>
+      ${opt('h2', 'title', s.title)}
+      <ol class="pairs">${s.pairs.map((x) => `
+        <li><p class="life">${rich(x.life)}</p><span class="eq" aria-hidden="true">=</span><span class="git">${rich(x.git)}</span></li>`).join('')}
+      </ol>
+      ${opt('p', 'note', s.note)}`,
   },
 
   // 마지막 장. 정리와 안내(사이트 주소와 계정은 config.json에서 자동으로 붙어요)
