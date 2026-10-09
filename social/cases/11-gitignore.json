@@ -1,0 +1,143 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "feature",
+  "caption": "GitHub에 올린 코드에 비밀번호가 그대로 보인다면? 😱\n\n.gitignore는 'Git이 못 본 척할 파일 목록'이에요. 여기에 비밀번호가 든 .env 같은 파일을 적어 두면 커밋에 담기지 않아요.\n\n실수로 올렸다면 파일을 지우는 것만으로는 부족해요. 예전 커밋 기록에 남아 있으니 비밀번호부터 바꿔야 해요.\n\n어떤 파일이 커밋에 담기는지는 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": [
+    "깃허브",
+    "깃",
+    "github",
+    "gitignore",
+    "보안",
+    "개발입문",
+    "코딩공부",
+    "비전공개발자",
+    "개발용어"
+  ],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #11",
+      "title": "비밀번호 파일도\n**같이 올라가요?**",
+      "subtitle": "올리면 안 되는 파일을 막는 .gitignore",
+      "cast": {
+        "who": "duo",
+        "mood": "surprised"
+      }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        {
+          "who": "tm",
+          "mood": "surprised",
+          "text": "GitHub에 **비밀번호**가\n보이는데요?!"
+        },
+        {
+          "who": "me",
+          "mood": "surprised",
+          "text": "헉, `.env` 파일까지\n올라갔나 봐요"
+        },
+        {
+          "who": "tm",
+          "mood": "happy",
+          "text": "**.gitignore**에 적어 두면\n막을 수 있어요"
+        }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "photo",
+      "label": "사진으로 비유하면",
+      "title": "앨범에 올리기 전에",
+      "pairs": [
+        {
+          "life": "여행 사진은 가족과 공유",
+          "git": "코드 파일"
+        },
+        {
+          "life": "신분증 사진은 빼 두기",
+          "git": ".gitignore"
+        }
+      ],
+      "note": "한번 공유하면 **누가 저장했을지** 몰라요.",
+      "cast": {
+        "who": "me",
+        "mood": "confused",
+        "say": "이건 빼야지!"
+      }
+    },
+    {
+      "type": "concept",
+      "label": ".gitignore",
+      "title": "Git이 **못 본 척**할\n파일 목록",
+      "body": "여기 적은 파일은 커밋에 담기지 않아요. 비밀번호가 든 `.env`나 내 컴퓨터 설정 파일을 적어요.",
+      "cast": {
+        "who": "tm",
+        "mood": "happy",
+        "pose": "point",
+        "say": "여기 적으면 끝!"
+      }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 적어요",
+      "lines": [
+        {
+          "cmd": "cat .gitignore"
+        },
+        {
+          "code": ".env"
+        },
+        {
+          "code": ".env.*"
+        },
+        {
+          "code": ".DS_Store"
+        },
+        {
+          "code": ".vscode/"
+        }
+      ],
+      "note": "이 시리즈를 만든 저장소의 `.gitignore`에도 **.env**가 들어 있어요."
+    },
+    {
+      "type": "steps",
+      "title": "실수로 올렸다면",
+      "items": [
+        {
+          "name": "비밀번호부터 바꾸기",
+          "desc": "이미 보였다고 생각해요"
+        },
+        {
+          "name": ".gitignore에 추가",
+          "desc": "다시 올라가지 않게 막아요"
+        },
+        {
+          "name": "Git에서 파일 빼기",
+          "desc": "`git rm --cached .env`"
+        },
+        {
+          "name": "팀에 알리기",
+          "desc": "숨기지 말고 함께 해결해요"
+        }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "파일을 지우면\n비밀번호도 사라진다",
+      "truth": "아니에요. 지운 뒤에도 **예전 커밋 기록**에 남아 있어요. 그래서 비밀번호부터 **바꿔야** 해요."
+    },
+    {
+      "type": "end",
+      "title": "올리기 전에\n**한 번 더** 확인해요",
+      "body": "어떤 파일이 커밋에 담기는지는 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": {
+        "who": "me",
+        "mood": "proud",
+        "pose": "wave",
+        "say": "확인 또 확인!"
+      }
+    }
+  ]
+}
