@@ -72,7 +72,7 @@ npm run render -- --no-video            # 영상 빼고 이미지만
 | `concept` | 개념 하나 설명 | `label`, **`title`**, `body` |
 | `compare` | 두 가지 비교 | `title`, **`left`**/**`right`**: `label`, `points`(1~4개), `verdict` |
 | `steps` | 순서가 있는 과정 | `title`, **`items`**: **`name`**, `desc` (2~5개) |
-| `terminal` | 실제 명령어 화면 | `title`, **`lines`**: `cmd`(입력) 또는 `out`(출력), `note` |
+| `terminal` | 실제 명령어 화면 | `title`, **`lines`**: `cmd`(입력한 명령), `out`(출력), `code`(파일 내용) 중 하나, `note` |
 | `myth` | 흔한 오해와 사실 | **`myth`**, **`truth`** |
 | `end` | 마지막 장. 정리와 안내(사이트 주소는 자동) | **`title`**, `body`, `cta` |
 
