@@ -1,0 +1,76 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "cloud",
+  "caption": "PR 아래에 뜨는 초록 체크와 빨간 X, 뭔지 궁금하셨죠? ✅❌\n\nGitHub Actions는 PR이 올라올 때마다 GitHub가 빌려주는 임시 컴퓨터가 정해 둔 검사를 자동으로 돌려 주는 기능이에요. 통과하면 초록 체크, 문제가 있으면 빨간 X가 떠요.\n\n빨간 X는 큰일이 아니라, 고객에게 닿기 전에 문제를 찾았다는 뜻이에요. 이 시리즈도 PR마다 자동 검사가 화면 넘침을 미리 잡아 줬어요.\n\nPR, 리뷰, 머지로 이어지는 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "github", "githubactions", "자동화", "CI", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #14",
+      "title": "PR 아래 초록 체크는\n**뭐예요?**",
+      "subtitle": "자동 검사, GitHub Actions",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "confused", "text": "PR 아래에 빨간 X가\n떴어요…" },
+        { "who": "tm", "mood": "happy", "text": "**자동 검사**가 문제를\n찾아 준 거예요" },
+        { "who": "me", "mood": "happy", "text": "머지하기 **전에**\n알려 줘서 다행이다!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "주방의 자동 검수대",
+      "pairs": [
+        { "life": "새 요리가 검수대에 올라옴", "git": "PR 열기" },
+        { "life": "온도와 간을 자동으로 측정", "git": "자동 검사" },
+        { "life": "통과하면 초록불, 아니면 빨간불", "git": "통과 / 실패" }
+      ],
+      "note": "사람이 놓치는 걸 **매번 똑같이** 확인해요."
+    },
+    {
+      "type": "concept",
+      "label": "GitHub Actions",
+      "title": "GitHub가 빌려주는\n**검사 컴퓨터**",
+      "body": "PR이 올라올 때마다 임시 컴퓨터가 정해 둔 검사를 돌려요. 결과는 PR 아래에 **초록 체크**나 **빨간 X**로 떠요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "결과는 여기!" }
+    },
+    {
+      "type": "terminal",
+      "title": "이 시리즈도 검사해요",
+      "lines": [
+        { "cmd": "npm run render" },
+        { "out": "케이스 13개 검사 통과" },
+        { "out": "이미지와 영상 만들기 완료" },
+        { "code": "render  통과" },
+        { "code": "check   통과" }
+      ],
+      "note": "PR마다 **글이 화면을 넘치지 않는지** 자동으로 확인해요."
+    },
+    {
+      "type": "steps",
+      "title": "자동 검사가 하는 일",
+      "items": [
+        { "name": "PR이 올라오면 시작", "desc": "누가 누르지 않아도 돌아요" },
+        { "name": "정해 둔 검사 실행", "desc": "규칙에 맞는지 하나하나 봐요" },
+        { "name": "결과 표시", "desc": "초록 체크 또는 빨간 X" },
+        { "name": "빨간 X면 고치기", "desc": "다시 푸시하면 또 검사해요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "빨간 X가 뜨면\n큰일 난 거다",
+      "truth": "아니에요. 고객에게 닿기 **전에** 문제를 찾은 거예요. 원인을 고쳐서 **다시 푸시**하면 돼요."
+    },
+    {
+      "type": "end",
+      "title": "자동 검사는\n**지치지 않는 리뷰어**",
+      "body": "이 시리즈를 만들 때도 자동 검사가 화면 넘침을 미리 잡아 줬어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "초록불 확인!" }
+    }
+  ]
+}
