@@ -10,9 +10,9 @@
 
   --main: #1c8db3;
   --cloud: #5a5fe0;
-  --feature: #ec7424;
+  --feature: #c85a0c;  /* 흰 글씨 대비 4.3 */
   --hot: #e5336b;
-  --mate: #d4950f;
+  --mate: #a86d00;     /* 흰 글씨 대비 4.3 */
 
   --sans: "Pretendard", "Apple SD Gothic Neo", sans-serif;
   --mono: "JetBrains Mono", "Pretendard", monospace;
