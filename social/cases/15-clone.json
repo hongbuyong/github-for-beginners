@@ -1,0 +1,73 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "mate",
+  "caption": "새 팀에 합류했는데 저장소 주소만 받았다면, 코드는 어떻게 가져올까요? 🤔\n\n클론(clone)은 GitHub 저장소를 내 노트북으로 통째로 복사해 오는 거예요. 코드뿐 아니라 지금까지의 커밋 기록까지 전부 받아와요.\n\n처음 한 번만 클론하고, 그다음부터는 풀(pull)로 바뀐 것만 받아요. 도서관 책을 처음엔 통째로 복사해 오고, 개정되면 바뀐 쪽만 받아 오는 것처럼요.\n\n내 노트북과 GitHub 사이를 파일이 오가는 모습은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitclone", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #15",
+      "title": "처음 받을 땐\n**클론(clone)**",
+      "subtitle": "저장소를 내 노트북으로 통째로 가져오기",
+      "cast": { "who": "duo", "mood": "happy" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "tm", "mood": "happy", "text": "오늘부터 같이 작업해요!\n저장소 주소 보낼게요" },
+        { "who": "me", "mood": "confused", "text": "주소만으로 어떻게\n**코드를 받아요**?" },
+        { "who": "tm", "mood": "happy", "text": "`git clone` 한 줄이면 돼요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "책을 통째로 집으로",
+      "pairs": [
+        { "life": "책 한 권을 통째로 복사해 오기", "git": "git clone" },
+        { "life": "개정된 쪽만 새로 받아 오기", "git": "git pull" }
+      ],
+      "note": "처음 한 번만 통째로, 그다음엔 **바뀐 것만** 받아요.",
+      "cast": { "who": "me", "mood": "happy", "say": "처음 한 번만!" }
+    },
+    {
+      "type": "concept",
+      "label": "클론 · git clone",
+      "title": "GitHub 저장소를\n**내 노트북으로** 복사",
+      "body": "코드와 지금까지의 **커밋 기록 전체**를 내 노트북에 받아와요. 받고 나면 바로 작업을 시작할 수 있어요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "기록까지 전부!" }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 받아요",
+      "lines": [
+        { "cmd": "git clone https://github.com/team/shop" },
+        { "out": "Cloning into 'shop'..." },
+        { "cmd": "cd shop" },
+        { "cmd": "git log --oneline" },
+        { "code": "7c1d2e0 로그인 버튼 글자 키우기" }
+      ],
+      "note": "커밋 기록까지 함께 받아서 **처음부터의 역사**를 볼 수 있어요."
+    },
+    {
+      "type": "compare",
+      "title": "클론과 풀",
+      "left": { "label": "클론", "points": ["처음 한 번만 해요", "저장소 전체를 받아요", "폴더가 새로 생겨요"] },
+      "right": { "label": "풀", "points": ["작업 전마다 해요", "바뀐 것만 받아요", "있던 폴더를 최신으로"] },
+      "verdict": "처음엔 **클론**, 그다음부턴 **풀**"
+    },
+    {
+      "type": "myth",
+      "myth": "클론은 포크랑\n같은 거다",
+      "truth": "아니에요. 포크는 **내 GitHub 계정**에, 클론은 **내 노트북**에 복사해요. 포크한 저장소도 클론해서 작업해요."
+    },
+    {
+      "type": "end",
+      "title": "처음엔 클론,\n**그다음부턴 풀**",
+      "body": "내 노트북과 GitHub 사이를 파일이 오가는 모습은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "작업 시작!" }
+    }
+  ]
+}
