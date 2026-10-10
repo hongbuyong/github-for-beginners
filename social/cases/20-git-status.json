@@ -1,0 +1,78 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "mate",
+  "caption": "add를 했던가? 이 파일은 저장됐나? 헷갈릴 때 쓰는 명령이 있어요 🧭\n\ngit status는 지금 내 작업이 어떤 상태인지 알려 줘요. 커밋할 준비가 된 파일, 고쳤지만 아직 담지 않은 파일, 깃이 처음 보는 새 파일을 나눠서 보여 줘요.\n\n식당 앱에서 주문하기 전에 장바구니를 한 번 확인하는 것처럼, 커밋하기 전에 status를 한 번 보면 실수가 줄어요. 아무것도 바꾸지 않으니 자주 써도 괜찮아요.\n\n커밋이 쌓이는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitstatus", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #20",
+      "title": "지금 내 작업은\n**어떤 상태?**",
+      "subtitle": "헷갈릴 때 먼저 치는 git status",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "confused", "text": "add를 했던가…\n**기억이 안 나요**" },
+        { "who": "tm", "mood": "happy", "text": "`git status`를 치면\n**지금 상태**가 보여요" },
+        { "who": "me", "mood": "happy", "text": "장바구니 확인하는\n버튼 같은 거네요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "주문 전 장바구니 확인",
+      "pairs": [
+        { "life": "장바구니에 담은 메뉴", "git": "커밋 준비됨" },
+        { "life": "고민 중이라 안 담은 메뉴", "git": "아직 안 담음" },
+        { "life": "메뉴판에 없던 새 메뉴", "git": "새 파일" }
+      ],
+      "note": "주문하기 전에 **한 번 훑어보는** 화면이에요."
+    },
+    {
+      "type": "concept",
+      "label": "깃 스테이터스 · git status",
+      "title": "파일들을\n**세 칸으로** 나눠 보기",
+      "body": "커밋할 준비가 된 파일, 고쳤지만 아직 **담지 않은** 파일, 깃이 처음 보는 **새 파일**을 나눠서 알려 줘요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "헷갈리면 status!" }
+    },
+    {
+      "type": "terminal",
+      "title": "상태를 봐요",
+      "lines": [
+        { "cmd": "git status" },
+        { "out": "Changes to be committed:" },
+        { "code": "  modified:   index.html" },
+        { "out": "Changes not staged for commit:" },
+        { "out": "  modified:   style.css" },
+        { "out": "Untracked files:" },
+        { "out": "  memo.txt" }
+      ],
+      "note": "**index.html**만 커밋될 준비가 됐다는 뜻이에요."
+    },
+    {
+      "type": "steps",
+      "title": "이럴 때 쳐 봐요",
+      "items": [
+        { "name": "작업을 시작할 때", "desc": "어디까지 했는지 확인" },
+        { "name": "add 하고 나서", "desc": "제대로 담겼는지 확인" },
+        { "name": "커밋하기 전", "desc": "빠진 파일이 없는지 확인" },
+        { "name": "뭔가 이상할 때", "desc": "안내 문구에 힌트가 있어요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "status를 치면\n뭔가 저장된다",
+      "truth": "아니에요. **보기만** 하는 명령이에요. 아무것도 바꾸지 않으니 하루에 몇십 번 쳐도 괜찮아요."
+    },
+    {
+      "type": "end",
+      "title": "헷갈리면\n**status부터**",
+      "body": "커밋이 쌓이는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "확인 완료!" }
+    }
+  ]
+}
