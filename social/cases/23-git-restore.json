@@ -1,0 +1,75 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "cloud",
+  "caption": "파일을 이것저것 고치다가 오히려 망가졌어요. 처음 상태로 돌아가고 싶다면? ↩️\n\ngit restore는 아직 커밋하지 않은 파일을 마지막 커밋 상태로 되돌리는 명령이에요. 고친 내용을 하나하나 지울 필요 없이 한 번에 원래대로 돌아가요.\n\n사진 편집 앱에서 필터를 이것저것 써 보다가 '원본으로 되돌리기'를 누르는 것과 같아요. 다만 되돌린 변경은 다시 살릴 수 없으니, 지워도 되는지 git diff로 먼저 확인하세요.\n\n커밋이 쌓이는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitrestore", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #23",
+      "title": "고치다 망친 파일\n**원래대로 되돌리기**",
+      "subtitle": "커밋 전 실수를 지우는 git restore",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "이것저것 고치다가\n**화면이 깨졌어요!**" },
+        { "who": "tm", "mood": "happy", "text": "아직 커밋 전이죠?\n`git restore`면 돼요" },
+        { "who": "me", "mood": "happy", "text": "고치기 전으로\n**한 번에** 돌아가네요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "photo",
+      "label": "사진으로 비유하면",
+      "title": "편집 앱의 원본 되돌리기",
+      "pairs": [
+        { "life": "저장해 둔 원본 사진", "git": "마지막 커밋" },
+        { "life": "필터를 잔뜩 입힌 사진", "git": "고친 파일" },
+        { "life": "'원본으로 되돌리기'", "git": "git restore" }
+      ],
+      "note": "원본은 그대로, **편집한 것만** 사라져요."
+    },
+    {
+      "type": "concept",
+      "label": "깃 리스토어 · git restore",
+      "title": "커밋하기 전 변경을\n**처음 상태로**",
+      "body": "고친 파일을 **마지막 커밋** 때 모습으로 되돌려요. 이미 커밋한 기록은 건드리지 않아요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "커밋 전이라면!" }
+    },
+    {
+      "type": "terminal",
+      "title": "되돌려 봐요",
+      "lines": [
+        { "cmd": "git status" },
+        { "out": "  modified:   style.css" },
+        { "cmd": "git restore style.css" },
+        { "cmd": "git status" },
+        { "code": "nothing to commit, working tree clean" }
+      ],
+      "note": "고친 흔적이 사라지고 **깨끗한 상태**가 됐어요."
+    },
+    {
+      "type": "steps",
+      "title": "되돌리기 전에",
+      "items": [
+        { "name": "git status", "desc": "어떤 파일이 바뀌었는지 보기" },
+        { "name": "git diff", "desc": "지워도 되는 내용인지 확인" },
+        { "name": "git restore 파일", "desc": "그 파일만 원래대로" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "restore한 것도\n다시 살릴 수 있다",
+      "truth": "아니에요. 커밋 전 변경은 깃이 기록해 두지 않아서 **되돌리면 사라져요**. 아까우면 먼저 stash해 두세요."
+    },
+    {
+      "type": "end",
+      "title": "망쳤다면\n**restore로 처음부터**",
+      "body": "커밋이 쌓이는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "원래대로!" }
+    }
+  ]
+}
