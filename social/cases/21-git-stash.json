@@ -1,0 +1,77 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "hot",
+  "caption": "한창 작업 중인데 급한 일이 들어왔어요. 아직 커밋하기엔 애매한데 어떡하죠? 🧊\n\ngit stash는 하던 작업을 잠깐 따로 치워 두는 명령이에요. 치워 두면 작업 공간이 깨끗해져서 급한 일을 먼저 처리할 수 있어요. 끝나면 git stash pop으로 그대로 다시 꺼내요.\n\n식당 주방에서 만들던 요리를 잠깐 냉장고에 넣어 두고 급한 주문부터 내는 것과 같아요. 반쯤 된 작업을 억지로 커밋하지 않아도 돼요.\n\n커밋이 쌓이는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitstash", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #21",
+      "title": "하던 작업을\n**잠깐 치워 두기**",
+      "subtitle": "급한 일이 생겼을 때 쓰는 git stash",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "tm", "mood": "surprised", "text": "급한 오류예요!\n**먼저 봐 줄래요?**" },
+        { "who": "me", "mood": "confused", "text": "하던 게 반쯤인데…\n커밋하긴 애매해요" },
+        { "who": "tm", "mood": "happy", "text": "`git stash`로\n**잠깐 치워 두면** 돼요" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "급한 주문이 들어온 주방",
+      "pairs": [
+        { "life": "만들던 요리를 냉장고에", "git": "git stash" },
+        { "life": "급한 주문부터 내기", "git": "급한 작업" },
+        { "life": "냉장고에서 다시 꺼내기", "git": "stash pop" }
+      ],
+      "note": "만들던 요리는 버리지 않고 **그대로** 남아 있어요."
+    },
+    {
+      "type": "concept",
+      "label": "깃 스태시 · git stash",
+      "title": "커밋하지 않고\n**잠깐 보관하기**",
+      "body": "아직 커밋하지 않은 변경을 따로 보관하고, 작업 공간을 **마지막 커밋 상태**로 깨끗하게 돌려놔요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "잠깐 보관!" }
+    },
+    {
+      "type": "terminal",
+      "title": "치우고 다시 꺼내요",
+      "lines": [
+        { "cmd": "git stash" },
+        { "out": "Saved working directory and index state" },
+        { "out": "# 급한 오류 고치고 커밋하기" },
+        { "cmd": "git stash pop" },
+        { "code": "  modified:   style.css" },
+        { "out": "Dropped refs/stash@{0}" }
+      ],
+      "note": "치워 둔 **style.css** 작업이 그대로 돌아왔어요."
+    },
+    {
+      "type": "steps",
+      "title": "급한 일이 생기면",
+      "items": [
+        { "name": "git stash", "desc": "하던 작업을 치워 둬요" },
+        { "name": "급한 일 처리", "desc": "고치고 커밋까지 해요" },
+        { "name": "git stash pop", "desc": "치워 둔 작업을 꺼내요" },
+        { "name": "하던 일 계속", "desc": "멈춘 곳부터 이어서 해요" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "stash하면\n작업이 지워진다",
+      "truth": "아니에요. **따로 보관**해 둔 거예요. 보관함에 그대로 있어서 pop으로 언제든 다시 꺼낼 수 있어요."
+    },
+    {
+      "type": "end",
+      "title": "급할 땐\n**stash로 잠깐 보관**",
+      "body": "커밋이 쌓이는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "다시 꺼내기!" }
+    }
+  ]
+}
