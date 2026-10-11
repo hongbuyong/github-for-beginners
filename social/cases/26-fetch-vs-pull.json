@@ -1,0 +1,81 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "cloud",
+  "caption": "fetch랑 pull, 둘 다 '받아오기' 같은데 뭐가 다를까요? 📬\n\ngit fetch는 GitHub에 새로 올라온 내용을 확인만 하고 내 작업에는 아직 섞지 않아요. git pull은 받아온 내용을 내 작업에 바로 합쳐요. 사실 pull은 fetch와 merge를 한 번에 하는 명령이에요.\n\n도서관 앱에서 신간 목록만 훑어보는 게 fetch, 책을 빌려 와서 내 책장에 꽂는 게 pull이에요. 뭐가 바뀌었는지 먼저 보고 싶을 땐 fetch부터 해 보세요.\n\n커밋이 오가는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "gitfetch", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #26",
+      "title": "fetch와 pull,\n**뭐가 달라요?**",
+      "subtitle": "확인만 하기 vs 바로 합치기",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "confused", "text": "fetch랑 pull,\n**둘 다 받아오기** 아니에요?" },
+        { "who": "tm", "mood": "happy", "text": "fetch는 **확인만**,\npull은 **합치기까지**예요" },
+        { "who": "me", "mood": "surprised", "text": "먼저 보고 나서\n합칠 수도 있겠네요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "신간 목록 vs 책 빌리기",
+      "pairs": [
+        { "life": "앱에서 신간 목록만 보기", "git": "git fetch" },
+        { "life": "책을 빌려 내 책장에 꽂기", "git": "git pull" },
+        { "life": "목록 보고 고른 뒤 빌리기", "git": "fetch→merge" }
+      ],
+      "note": "목록을 봐도 **내 책장은 그대로**예요."
+    },
+    {
+      "type": "compare",
+      "title": "한눈에 비교",
+      "left": {
+        "label": "git fetch",
+        "points": ["새 커밋을 받아만 둬요", "내 파일은 그대로"]
+      },
+      "right": {
+        "label": "git pull",
+        "points": ["받아서 바로 합쳐요", "내 파일이 바뀌어요"]
+      },
+      "verdict": "pull = fetch + merge"
+    },
+    {
+      "type": "terminal",
+      "title": "확인하고 합쳐요",
+      "lines": [
+        { "cmd": "git fetch" },
+        { "out": "   3f2a1c9..7c1d2e0  main -> origin/main" },
+        { "out": "# 내 파일은 아직 그대로" },
+        { "cmd": "git merge origin/main" },
+        { "code": "Fast-forward" }
+      ],
+      "note": "fetch로 **먼저 보고**, 괜찮으면 merge로 합쳐요."
+    },
+    {
+      "type": "steps",
+      "title": "이럴 땐 fetch부터",
+      "items": [
+        { "name": "팀원이 뭘 올렸는지 궁금할 때", "desc": "합치기 전에 먼저 보기" },
+        { "name": "내가 작업 중일 때", "desc": "하던 일을 건드리지 않기" },
+        { "name": "충돌이 걱정될 때", "desc": "미리 보고 준비하기" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "fetch만 해도\n내 파일이 최신이 된다",
+      "truth": "아니에요. fetch는 **받아만 둬요**. 내 파일까지 바꾸려면 merge하거나 처음부터 pull을 써요."
+    },
+    {
+      "type": "end",
+      "title": "궁금하면 fetch,\n**합칠 땐 pull**",
+      "body": "커밋이 오가는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "먼저 보고 합치기!" }
+    }
+  ]
+}
