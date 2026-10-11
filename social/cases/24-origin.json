@@ -1,0 +1,75 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "feature",
+  "caption": "git push origin main… 여기서 origin은 대체 뭘까요? 🏛️\n\norigin은 GitHub에 있는 내 저장소 주소에 붙인 별명이에요. https://github.com/… 같은 긴 주소를 매번 치는 대신, clone할 때 깃이 자동으로 origin이라는 이름을 붙여 줘요.\n\n'○○시립 중앙도서관'을 줄여서 '본관'이라고 부르는 것과 같아요. git push origin main은 '본관에 main 책을 반납해 줘'라는 뜻이에요.\n\n커밋이 오가는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "origin", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #24",
+      "title": "push origin의\n**origin은 뭐예요?**",
+      "subtitle": "GitHub 주소에 붙인 별명, origin",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "confused", "text": "`push origin main`의\n**origin**은 뭐예요?" },
+        { "who": "tm", "mood": "happy", "text": "GitHub 저장소 주소의\n**별명**이에요" },
+        { "who": "me", "mood": "surprised", "text": "긴 주소 대신\n부르는 이름이네요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "길고 긴 이름 대신 '본관'",
+      "pairs": [
+        { "life": "○○시립 중앙도서관", "git": "GitHub 저장소" },
+        { "life": "줄여서 부르는 '본관'", "git": "origin" },
+        { "life": "본관에 책 반납하기", "git": "push origin" }
+      ],
+      "note": "건물은 그대로, **부르는 이름**만 짧아져요."
+    },
+    {
+      "type": "concept",
+      "label": "오리진 · origin",
+      "title": "원격 저장소에 붙인\n**기본 별명**",
+      "body": "`git clone`을 하면 깃이 가져온 주소에 자동으로 **origin**이라는 이름을 붙여요. 그래서 따로 정하지 않아도 써요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "clone하면 자동!" }
+    },
+    {
+      "type": "terminal",
+      "title": "별명을 확인해요",
+      "lines": [
+        { "cmd": "git remote -v" },
+        { "code": "origin  https://github.com/me/site (fetch)" },
+        { "code": "origin  https://github.com/me/site (push)" },
+        { "cmd": "git push origin main" },
+        { "out": "To https://github.com/me/site" }
+      ],
+      "note": "origin이 **어느 주소**를 가리키는지 보여 줘요."
+    },
+    {
+      "type": "steps",
+      "title": "명령어 읽는 법",
+      "items": [
+        { "name": "git push", "desc": "무엇을 할까? 올리기" },
+        { "name": "origin", "desc": "어디로? GitHub의 내 저장소로" },
+        { "name": "main", "desc": "무엇을? main 브랜치를" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "origin은 꼭 써야\n하는 정해진 단어다",
+      "truth": "아니에요. 그냥 **기본 별명**이에요. 다른 이름도 붙일 수 있지만, 대부분 그대로 origin을 써요."
+    },
+    {
+      "type": "end",
+      "title": "origin은\n**GitHub의 별명**",
+      "body": "커밋이 오가는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "본관으로 push!" }
+    }
+  ]
+}
