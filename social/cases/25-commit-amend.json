@@ -1,0 +1,76 @@
+{
+  "series": "헷갈리는 깃 용어",
+  "accent": "mate",
+  "caption": "커밋하고 나서 \"아, 파일 하나 빠졌다!\" 해 본 적 있나요? 🙋\n\ngit commit --amend는 방금 한 커밋을 고쳐 쓰는 명령이에요. 빠진 파일을 넣거나 커밋 메시지의 오타를 고칠 때 써요. 새 커밋이 하나 더 생기는 게 아니라, 마지막 커밋이 고친 내용으로 바뀌어요.\n\n식당에서 주문하자마자 \"음료 하나 추가요!\" 하고 주문서를 고치는 것과 같아요. 단, 주방에 이미 넘어간 주문(push한 커밋)은 고치지 않는 게 좋아요.\n\n커밋이 쌓이는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "커밋수정", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "헷갈리는 깃 용어 #25",
+      "title": "방금 한 커밋\n**살짝 고치기**",
+      "subtitle": "빠진 파일, 메시지 오타엔 --amend",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "커밋했는데\n**파일 하나가 빠졌어요!**" },
+        { "who": "tm", "mood": "happy", "text": "push 전이면\n`--amend`로 고쳐요" },
+        { "who": "me", "mood": "happy", "text": "커밋을 하나 더\n안 만들어도 되네요!" }
+      ]
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "주문 직후 \"하나 추가요!\"",
+      "pairs": [
+        { "life": "방금 쓴 주문서", "git": "마지막 커밋" },
+        { "life": "\"음료 하나 추가요!\"", "git": "--amend" },
+        { "life": "주방에 넘어간 주문", "git": "push한 커밋" }
+      ],
+      "note": "주방에 넘기기 **전에만** 고쳐요."
+    },
+    {
+      "type": "concept",
+      "label": "커밋 어멘드 · commit --amend",
+      "title": "마지막 커밋을\n**고쳐 쓰기**",
+      "body": "빠진 파일을 넣거나 메시지를 고쳐서 **마지막 커밋을 새로** 만들어요. 기록에는 고친 커밋 하나만 남아요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "마지막 것만!" }
+    },
+    {
+      "type": "terminal",
+      "title": "빠진 파일 넣기",
+      "lines": [
+        { "cmd": "git commit -m \"로그인 버튼 추가\"" },
+        { "out": "# 앗, style.css를 빠뜨렸다!" },
+        { "cmd": "git add style.css" },
+        { "cmd": "git commit --amend --no-edit" },
+        { "cmd": "git log --oneline" },
+        { "code": "9b1f3e2 로그인 버튼 추가" }
+      ],
+      "note": "커밋이 두 개가 아니라 **하나로** 정리됐어요."
+    },
+    {
+      "type": "steps",
+      "title": "이럴 때 써요",
+      "items": [
+        { "name": "파일을 빠뜨렸을 때", "desc": "git add 후 --amend" },
+        { "name": "메시지에 오타가 있을 때", "desc": "--amend -m \"새 메시지\"" },
+        { "name": "push하기 전", "desc": "아직 나만 본 커밋일 때만" }
+      ]
+    },
+    {
+      "type": "myth",
+      "myth": "push한 커밋도\n편하게 고치면 된다",
+      "truth": "아니에요. 고친 커밋은 **해시가 바뀌어서** 팀원 기록과 어긋나요. push한 뒤라면 새 커밋으로 고치세요."
+    },
+    {
+      "type": "end",
+      "title": "push 전이라면\n**--amend로 깔끔하게**",
+      "body": "커밋이 쌓이는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "깔끔하게 정리!" }
+    }
+  ]
+}
