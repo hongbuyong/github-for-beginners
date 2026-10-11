@@ -1,0 +1,83 @@
+{
+  "series": "깃 오류 메시지 풀이",
+  "accent": "hot",
+  "caption": "다른 브랜치로 옮기려는데 'Please commit your changes or stash them'이 떴어요. 무슨 뜻일까요? 🧺\n\n아직 저장하지 않은 고친 내용이 있는데, 브랜치를 옮기면 그 내용이 덮어써질 수 있다는 경고예요. 깃이 내 작업을 지키려고 잠깐 멈춰 세운 거예요.\n\n해결 방법은 세 가지예요. 저장할 거면 commit, 잠깐 치워 둘 거면 stash, 필요 없는 변경이면 restore로 버리면 돼요.\n\n식당 주방에서 만들던 요리를 그대로 두고 다른 주방으로 가면 섞여 버리니, 접시에 담거나 냉장고에 넣고 가는 것과 같아요.\n\n커밋이 오가는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "깃오류", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "오류 메시지 풀이 #2",
+      "title": "브랜치가\n**안 넘어가요**",
+      "subtitle": "commit or stash 오류, 이렇게 풀어요",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "confused", "text": "브랜치를 옮기려는데\n**안 넘어가요**" },
+        { "who": "tm", "mood": "happy", "text": "고치던 파일이\n**저장 안 된** 채라서요" },
+        { "who": "tm", "mood": "happy", "text": "commit이나 stash부터\n해 주면 돼요" }
+      ]
+    },
+    {
+      "type": "terminal",
+      "title": "이런 화면이에요",
+      "lines": [
+        { "cmd": "git switch feature/login" },
+        { "out": "error: Your local changes to the following" },
+        { "out": "files would be overwritten by checkout:" },
+        { "code": "        style.css" },
+        { "out": "Please commit your changes or stash them" },
+        { "out": "before you switch branches." },
+        { "out": "Aborting" }
+      ],
+      "note": "\"옮기면 **style.css 작업이 덮어써져요**\"라는 뜻이에요."
+    },
+    {
+      "type": "analogy",
+      "scene": "restaurant",
+      "label": "식당으로 비유하면",
+      "title": "요리 중에 주방 옮기기",
+      "pairs": [
+        { "life": "다 된 요리는 접시에 담기", "git": "commit" },
+        { "life": "덜 된 요리는 냉장고에", "git": "stash" },
+        { "life": "망친 요리는 버리기", "git": "restore" }
+      ],
+      "note": "그냥 두고 가면 **다른 요리와 섞여요**."
+    },
+    {
+      "type": "steps",
+      "title": "상황별 해결법",
+      "items": [
+        { "name": "저장할 작업이면", "desc": "git commit 후 switch" },
+        { "name": "잠깐 치워 둘 거면", "desc": "git stash → switch → stash pop" },
+        { "name": "필요 없는 변경이면", "desc": "git restore style.css 후 switch" }
+      ]
+    },
+    {
+      "type": "terminal",
+      "title": "stash로 해결해요",
+      "lines": [
+        { "cmd": "git stash" },
+        { "cmd": "git switch feature/login" },
+        { "code": "Switched to branch 'feature/login'" },
+        { "out": "# 일 마치고 돌아와서" },
+        { "cmd": "git switch main" },
+        { "cmd": "git stash pop" }
+      ],
+      "note": "치워 둔 작업이 **그대로** 돌아와요."
+    },
+    {
+      "type": "myth",
+      "myth": "-f로 강제로 옮기면\n해결된다",
+      "truth": "아니에요. 강제로 옮기면 저장 안 한 변경이 **사라질 수 있어요**. 먼저 commit이나 stash로 지켜 주세요."
+    },
+    {
+      "type": "end",
+      "title": "옮기기 전에\n**저장하거나 치우기**",
+      "body": "커밋이 오가는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "stash하고 이동!" }
+    }
+  ]
+}
