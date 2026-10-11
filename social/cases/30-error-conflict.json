@@ -1,0 +1,83 @@
+{
+  "series": "깃 오류 메시지 풀이",
+  "accent": "hot",
+  "caption": "pull 했더니 빨간 글씨로 CONFLICT가 떴어요. 이제 어떻게 해야 할까요? ⚔️\n\n나와 팀원이 같은 파일의 같은 줄을 서로 다르게 고쳐서, 깃이 어느 쪽을 남길지 정하지 못한 거예요. 고장이 아니라 \"골라 주세요\"라는 질문이에요.\n\n푸는 방법은 네 단계예요. 파일에서 <<<<<<< 표시를 찾고, 남길 내용을 고른 뒤 표시를 지우고, git add로 담고, git commit으로 마무리해요. 정 막히면 git merge --abort로 합치기 전으로 돌아갈 수도 있어요.\n\n같은 사진을 두 사람이 다르게 보정했을 때, 앨범에 넣을 한 장을 고르는 것과 같아요.\n\n커밋이 오가는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "깃오류", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "오류 메시지 풀이 #4",
+      "title": "**CONFLICT**가\n떴어요",
+      "subtitle": "pull 했더니 충돌, 이렇게 풀어요",
+      "cast": { "who": "duo", "mood": "surprised" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "pull 했더니\n**CONFLICT**래요!" },
+        { "who": "tm", "mood": "confused", "text": "저도 그 줄을\n**고쳤나** 봐요" },
+        { "who": "tm", "mood": "happy", "text": "남길 쪽만 고르면\n금방 풀려요" }
+      ]
+    },
+    {
+      "type": "terminal",
+      "title": "이런 화면이에요",
+      "lines": [
+        { "cmd": "git pull" },
+        { "out": "Auto-merging index.html" },
+        { "code": "CONFLICT (content): Merge conflict in" },
+        { "code": "index.html" },
+        { "out": "Automatic merge failed; fix conflicts" },
+        { "out": "and then commit the result." }
+      ],
+      "note": "\"index.html에서 **어느 쪽을 남길지** 골라 주세요\"라는 뜻이에요."
+    },
+    {
+      "type": "analogy",
+      "scene": "photo",
+      "label": "사진으로 비유하면",
+      "title": "같은 사진, 다른 보정",
+      "pairs": [
+        { "life": "둘이 같은 사진을 다르게 보정", "git": "충돌" },
+        { "life": "앨범에 넣을 한 장 고르기", "git": "내용 고르기" },
+        { "life": "고른 사진을 앨범에 넣기", "git": "add · commit" }
+      ],
+      "note": "망가진 게 아니라 **고를 게 생긴** 거예요."
+    },
+    {
+      "type": "steps",
+      "title": "이렇게 풀어요",
+      "items": [
+        { "name": "표시 찾기", "desc": "파일에서 <<<<<<< 로 시작하는 곳" },
+        { "name": "남길 내용 고르기", "desc": "한쪽만, 또는 둘 다 살려도 돼요" },
+        { "name": "표시 지우기", "desc": "<<<, ===, >>> 줄을 지워요" },
+        { "name": "git add · commit", "desc": "다 고쳤다고 깃에 알려요" }
+      ]
+    },
+    {
+      "type": "terminal",
+      "title": "마무리해요",
+      "lines": [
+        { "cmd": "git status" },
+        { "out": "  both modified:   index.html" },
+        { "out": "# 고르고 표시까지 지운 뒤" },
+        { "cmd": "git add index.html" },
+        { "cmd": "git commit" },
+        { "code": "[main 9b1f3e2] Merge branch 'main'" }
+      ],
+      "note": "commit까지 하면 **충돌이 풀려요**."
+    },
+    {
+      "type": "myth",
+      "myth": "충돌이 나면\n처음부터 다시 해야 한다",
+      "truth": "아니에요. **겹친 줄만** 고르면 돼요. 정 막히면 git merge --abort로 합치기 전으로 돌아갈 수 있어요."
+    },
+    {
+      "type": "end",
+      "title": "CONFLICT는\n**고르라는 신호**",
+      "body": "커밋이 오가는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "충돌 해결!" }
+    }
+  ]
+}
