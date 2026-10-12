@@ -1,0 +1,77 @@
+{
+  "series": "깃 오류 메시지 풀이",
+  "accent": "hot",
+  "caption": "git status를 쳤더니 'fatal: not a git repository'가 떴어요. 깃이 고장 난 걸까요? 📁\n\n깃은 멀쩡해요. 지금 내가 서 있는 폴더가 깃 저장소가 아니라는 뜻이에요. 깃 저장소 폴더 안에는 .git이라는 숨은 폴더가 있는데, 깃은 이 폴더가 있는 곳에서만 일을 해요.\n\n해결은 간단해요. pwd로 지금 위치를 확인하고, cd로 프로젝트 폴더에 들어간 뒤 다시 명령을 치면 돼요. 아예 새 프로젝트라면 git init으로 저장소를 만들면 되고요.\n\n도서관 옆 카페에서 책을 빌려 달라고 하면 안 되는 것과 같아요. 도서관 안으로 들어가기만 하면 돼요.\n\n커밋이 오가는 전체 흐름은 프로필 링크의 애니메이션에서 볼 수 있어요.",
+  "hashtags": ["깃허브", "깃", "github", "git", "깃오류", "개발입문", "코딩공부", "비전공개발자", "개발용어"],
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "오류 메시지 풀이 #6",
+      "title": "여기는\n**저장소가 아니래요**",
+      "subtitle": "fatal: not a git repository 풀이",
+      "cast": { "who": "duo", "mood": "confused" }
+    },
+    {
+      "type": "talk",
+      "lines": [
+        { "who": "me", "mood": "surprised", "text": "깃 저장소가\n**아니래요**!" },
+        { "who": "tm", "mood": "happy", "text": "지금 **다른 폴더**에\n있어서 그래요" },
+        { "who": "me", "mood": "confused", "text": "폴더요?\n깃이 고장 난 줄…" }
+      ]
+    },
+    {
+      "type": "terminal",
+      "title": "이런 화면이에요",
+      "lines": [
+        { "cmd": "git status" },
+        { "code": "fatal: not a git repository (or any" },
+        { "code": "of the parent directories): .git" }
+      ],
+      "note": "\"여기엔 **.git 폴더가 없어요**\"라는 뜻이에요."
+    },
+    {
+      "type": "analogy",
+      "scene": "library",
+      "label": "도서관으로 비유하면",
+      "title": "도서관 밖에서 대출하기",
+      "pairs": [
+        { "life": "도서관 건물", "git": "저장소 폴더" },
+        { "life": "옆 카페에서 대출 신청", "git": "다른 폴더" },
+        { "life": "도서관 안으로 들어가기", "git": "cd 저장소" }
+      ],
+      "note": "책은 그대로 있어요. **들어가기만** 하면 돼요."
+    },
+    {
+      "type": "concept",
+      "label": ".git 폴더",
+      "title": "깃이 일하는\n**숨은 서랍**",
+      "body": "저장소 폴더 안에는 숨겨진 **.git 폴더**가 있어요. 커밋 기록이 모두 여기 담겨 있고, 깃은 이 폴더가 있는 곳에서만 일해요.",
+      "cast": { "who": "tm", "mood": "happy", "pose": "point", "say": "이 서랍이 있어야 해요" }
+    },
+    {
+      "type": "terminal",
+      "title": "이렇게 풀어요",
+      "lines": [
+        { "cmd": "pwd" },
+        { "out": "/Users/me/Desktop" },
+        { "out": "# 프로젝트 폴더로 들어가요" },
+        { "cmd": "cd my-project" },
+        { "cmd": "git status" },
+        { "code": "On branch main" }
+      ],
+      "note": "저장소 폴더 안에서는 **잘 돼요**."
+    },
+    {
+      "type": "myth",
+      "myth": "깃을 다시\n설치해야 한다",
+      "truth": "아니에요. 깃은 멀쩡해요. 지금 있는 **폴더**가 저장소가 아닐 뿐이에요. 저장소 폴더로 cd 하거나, 새 프로젝트라면 git init 하세요."
+    },
+    {
+      "type": "end",
+      "title": "not a git이 뜨면\n**폴더부터 확인**",
+      "body": "커밋이 오가는 전체 흐름은 애니메이션에서 볼 수 있어요.",
+      "cta": "전체 흐름 보러 가기",
+      "cast": { "who": "me", "mood": "proud", "pose": "wave", "say": "들어오니 되네요!" }
+    }
+  ]
+}
